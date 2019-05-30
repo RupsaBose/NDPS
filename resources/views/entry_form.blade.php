@@ -28,10 +28,10 @@
 								<div class="form-group required row">
 									<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Case No.</label>
 									<div class="col-sm-3">
-										<select class="form-control select2" id="ps" autocomplete="off">
-											<option value="">Select PS</option>
-											@foreach($data['ps'] as $ps)
-												<option value="{{$ps->ps_id}}">{{$ps->ps_name}}</option>
+										<select class="form-control select2" id="stakeholder" autocomplete="off">
+											<option value="">Select Stakeholder's Name</option>
+											@foreach($data['stakeholders'] as $stakeholder)
+												<option value="{{$stakeholder->stakeholder_id}}">{{$stakeholder->stakeholder_name}}</option>
 											@endforeach
 										</select>
 									</div>
@@ -253,6 +253,116 @@
 			})
 		/*If multiple narcotics are seized in a same case :: ENDS*/
 
+		/*If multiple narcotics are entered after first time submission of seizure details :: STARTS*/			
+			$(document).on("click","#seizure_add_more", function(){
+				$(".div_add_more_seizure:first").clone().find('.div_other_narcotic_type').hide().end().insertAfter(".div_add_more_seizure:last");
+				$(".seizure_add_more:last").attr({src:"images/details_close.png",
+																  class:"remove_add_more_seizure", 
+																	alt:"remove",
+																	id:""});
+				$(".seizure_quantity:last").val('');
+				$(".date").datepicker({
+                endDate:'0',
+                format: 'dd-mm-yyyy'
+         }); // Date picker re-initialization
+				
+			})
+		/*If multiple narcotics are entered after first time submission of seizure details :: ENDS*/
+
+			/*If multiple narcotics are seized in a same case after submission of seizure details once :: STARTS*/
+			$(document).on("click","#add_new_seizure", function(){
+					var obj;
+					var str_narcotic_list = "";
+
+					$.ajax({
+						type:"POST",
+						url:"entry_form/fetch_narcotics",
+						async: false,
+						data:{_token: $('meta[name="csrf-token"]').attr('content')},
+						success:function(response){
+							obj = $.parseJSON(response);							
+							$.each(obj,function(key,value){
+									str_narcotic_list=str_narcotic_list+'<option value="'+value.drug_id+'">'+value.drug_name+'</option>';
+							})							
+						}
+					})
+					
+				
+
+				var str_narcotic_details = 
+						'<div class="div_add_more_seizure">'+
+									'<div class="form-group required row">'+
+										'<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Nature of Narcotic</label>'+
+										'<div class="col-sm-3">'+
+											'<select class="form-control narcotic_type" autocomplete="off">'+
+												'<option value="" selected>Select An Option</option>'+str_narcotic_list+												
+												'<option value="999">Other</option>'+
+											'</select>'+
+										'</div>'+
+
+										'<div class="col-sm-1 div_img_add_more">'+
+											'<img src="{{asset("images/details_open.png")}}" style="cursor:pointer" class="seizure_add_more" alt="seizure_add_more" id="seizure_add_more">'+
+										'</div>'+
+
+										'<div class="col-sm-3 div_other_narcotic_type" style="display:none">'+
+												'<input class="form-control other_narcotic_name" type="text" placeholder="Narcotic Name" autocomplete="off">'+
+												'<input class="form-control flag_other_narcotic" type="number" style="display:none" autocomplete="off">'+
+										'</div>'+
+
+									'</div>'+
+
+									'<div class="form-group required row">'+
+										'<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Quantity of Seizure</label>'+
+										'<div class="col-sm-3">'+
+											'<input class="form-control seizure_quantity" type="number" autocomplete="off">'+
+										'</div>'+
+
+										'<label class="col-sm-2 col-sm-offset-1 col-form-label-sm control-label" style="font-size:medium">Weighing Unit</label>'+
+										'<div class="col-sm-2">'+
+											'<select class="form-control seizure_weighing_unit" autocomplete="off">'+
+												'<option value="" selected>Select An Option</option>'+
+											'</select>'+
+										'</div>'+
+									'</div>'+
+
+									'<div class="form-group required row">'+
+										'<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Date of Seizure</label>'+
+										'<div class="col-sm-3">'+
+											'<input type="text" class="form-control date seizure_date" placeholder="Choose Date" autocomplete="off">'+
+										'</div>'+
+
+										'<div class="col-sm-1 col-sm-offset-1">'+
+											'<button type="button" class="btn btn-success btn-md save">Save</button>'+											
+										'</div>'+
+
+									'</div>'+
+									
+									'<hr>'+
+
+								'</div>';
+
+					$(str_narcotic_details).insertAfter(".div_add_more:last");
+
+					$("#add_new_seizure").hide();
+					$("#cancel").show();
+					$(".date").datepicker({
+                endDate:'0',
+                format: 'dd-mm-yyyy'
+         }); // Date picker re-initialization
+				
+
+			})
+		/*If multiple narcotics are seized in a same case after submission of seizure details once :: ENDS*/
+
+
+		/*Cancel the attempt to insert new seizure details after the submission of seizure details once :: STARTS */
+			$(document).on("click","#cancel", function(){
+				$(".div_add_more_seizure").remove();
+				$("#add_new_seizure").show();
+				$("#cancel").hide();
+			})
+		/*Cancel the attempt to insert new seizure details after the submission of seizure details once :: ENDS */
+
 
 		/*If multiple narcotics are seized in a same case and want to remove one :: STARTS*/
 		$(document).on("click",".remove", function(){
@@ -260,6 +370,110 @@
 				$(this).closest(".div_add_more").remove();
 		})
 		/*If multiple narcotics are seized in a same case and want to remove one :: ENDS*/
+
+		/*If multiple narcotics are seized in a same case and want to remove one :: STARTS*/
+		$(document).on("click",".remove_add_more_seizure", function(){
+				$(this).closest(".div_add_more_seizure").remove();
+		})
+		/*If multiple narcotics are seized in a same case and want to remove one :: ENDS*/
+
+
+		/* Save New Seizure After Inserting Seizure Details Once :: STARTS*/
+		$(document).on("click",".save",function(){
+					var stakeholder = $("#stakeholder option:selected").val();
+					var case_no = $("#case_no").val();
+					var case_year = $("#case_year option:selected").val();							
+					var storage = $("#storage option:selected").val();
+					var remark = $("#remark").val();
+					var district = $("#district option:selected").val();
+					var court = $("#court option:selected").val();
+
+
+					var element = $(this);
+
+					// If div structure changes, following code will not work :: STARTS
+					var element_narcotic_type = $(this).parent().parent().prev().prev().find(".narcotic_type");
+					var narcotic_type = element_narcotic_type.val();
+
+					var element_other_narcotic_name = $(this).parent().parent().prev().prev().find(".other_narcotic_name");
+					var other_narcotic_name = element_other_narcotic_name.val();
+
+					var flag_other_narcotic = $(this).parent().parent().prev().prev().find(".flag_other_narcotic").val();
+
+					var element_seizure_quantity = $(this).parent().parent().prev().find(".seizure_quantity");
+					var seizure_quantity = element_seizure_quantity.val();
+
+					var element_seizure_weighing_unit = $(this).parent().parent().prev().find(".seizure_weighing_unit");
+					var seizure_weighing_unit = element_seizure_weighing_unit.val();
+
+					var element_seizure_date = $(this).parent().parent().find(".seizure_date");
+					var seizure_date = element_seizure_date.val();
+					// If div structure changes, following code will not work :: ENDS
+
+					if(narcotic_type==""){
+						swal("Invalid Input","Please Select Narcotic Contraband","error");
+						return false;
+					}
+					if(seizure_quantity==""){
+						swal("Invalid Input","Please Insert Seizure Quantity","error");
+						return false;
+					}
+					else if(seizure_weighing_unit==""){
+						swal("Invalid Input","Please Select Weighing Unit","error");
+						return false;
+					}
+					else if(seizure_date==""){
+						swal("Invalid Input","Please Insert Date of Seizure","error");
+						return false;
+					}
+					else{
+						swal({
+							title: "Are you sure?",
+							text: "",
+							icon: "warning",
+							buttons: true,
+							dangerMode: true,
+							})
+							.then((willDelete) => {
+									if (willDelete) {
+										$.ajax({
+													type: "POST",
+													url:"entry_form/add_new_seizure_details", 
+													data: {
+														_token: $('meta[name="csrf-token"]').attr('content'),
+														stakeholder:stakeholder,
+														case_no:case_no,
+														case_year:case_year,
+														narcotic_type:narcotic_type,
+														seizure_date:seizure_date,
+														seizure_quantity:seizure_quantity,
+														seizure_weighing_unit:seizure_weighing_unit,
+														other_narcotic_name:other_narcotic_name,
+														flag_other_narcotic:flag_other_narcotic,
+														storage:storage,
+														remark:remark,
+														district:district,
+														court:court
+													},
+													success:function(response){
+														swal("New Seizure Details Submitted Successfully","","success");
+														element_narcotic_type.attr('readonly',true);
+														element_seizure_quantity.attr('readonly',true);
+														element_seizure_weighing_unit.attr('disabled',true);
+														element_seizure_date.attr('readonly',true);
+														element_other_narcotic_name.attr('readonly',true);
+														element.hide();
+														$("#cancel").hide();
+													},
+													error:function(response){
+														console.log(response);
+													}
+										})
+									}
+						});
+					}
+			})
+			/* Save New Seizure After Inserting Seizure Details Once :: ENDS*/
 
 
 		/*Apply For Certification :: STARTS*/
@@ -272,7 +486,7 @@
 		
 		$(document).on("click","#apply",function(){
 
-				var ps = $("#ps option:selected").val();
+				var stakeholder = $("#stakeholder option:selected").val();
 				var case_no = $("#case_no").val();
 				var case_year = $("#case_year").val();
 
@@ -316,8 +530,8 @@
 				var court = $("#court option:selected").val();
 
 
-				if(ps==""){
-					swal("Invalid Input","Please Select PS Name","error");
+				if(stakeholder==""){
+					swal("Invalid Input","Please Select Stakeholder's Name","error");
 					return false;
 				}
 				else if(case_no==""){
@@ -355,7 +569,7 @@
 													url:"entry_form", 
 													data: {
 														_token: $('meta[name="csrf-token"]').attr('content'),
-														ps:ps,
+														stakeholder:stakeholder,
 														case_no:case_no,
 														case_year:case_year,
 														narcotic_type:narcotic_type,
@@ -374,7 +588,7 @@
 													success:function(response){
 														swal("Application For Certification Successfully Submitted","","success");
 														setTimeout(function(){
-																window.location.reload();
+																window.location.reload(true);
 														},2000);
 													},
 													error:function(response){
@@ -507,24 +721,24 @@
 
 			/*Fetching case details for a specific case :: STARTS */
 			$(document).on("change","#case_year", function(){
-					var ps = $("#ps option:selected").val();
+					var stakeholder = $("#stakeholder option:selected").val();
 					var case_no = $("#case_no").val();
 					var case_year = $("#case_year option:selected").val();
 
-					if(ps!="" && case_no!="" && case_year!=""){
+					if(stakeholder!="" && case_no!="" && case_year!=""){
 							$.ajax({
 								type:"POST",
 								url:"entry_form/fetch_case_details",
 								data:{
 									_token: $('meta[name="csrf-token"]').attr('content'),
-									ps:ps,
+									stakeholder:stakeholder,
 									case_no:case_no,
 									case_year:case_year
 								},
 								success:function(response){
 									var obj = $.parseJSON(response);
 									if(obj['case_details'].length>0){
-											$("#ps").attr('disabled',true);
+											$("#stakeholder").attr('disabled',true);
 											$("#case_no").attr('readonly',true);
 											$("#case_year").attr('disabled',true);
 
@@ -557,7 +771,8 @@
 													if(index==obj['case_details'].length-1){
 														str_case_details+=
 															'<div class="col-sm-1 col-sm-offset-1 div_add_new_seizure">'+
-																'<button type="button" class="btn btn-info btn-md add_new_seizure">New Seizure</button>'+
+																'<button type="button" class="btn btn-info btn-md add_new_seizure" id="add_new_seizure">New Seizure</button>'+
+																'<button type="button" class="btn btn-danger btn-md cancel" id="cancel" style="display:none">Cancel</button>'+
 															'</div>'+
 														
 														'</div>'+														
@@ -712,7 +927,7 @@
 											$("#storage").prepend("<option value='"+obj['case_details']['0'].storage_location_id+"' selected>"+obj['case_details']['0'].storage_name+"</option>").attr('disabled',true);
 											$("#remark").val(obj['case_details']['0'].remarks).attr('readonly',true);
 											$("#district").prepend("<option value='"+obj['case_details']['0'].district_id+"' selected>"+obj['case_details']['0'].district_name+"</option>").attr('disabled',true);
-											$("#court").prepend("<option value='"+obj['case_details']['0'].court_id+"' selected>"+obj['case_details']['0'].court_name+"</option>").attr('disabled',true);
+											$("#court").prepend("<option value='"+obj['case_details']['0'].certification_court_id+"' selected>"+obj['case_details']['0'].court_name+"</option>").attr('disabled',true);
 											
 											$("#apply").hide();	
 											$(".narcotic_type_disposal").trigger("change");
@@ -739,10 +954,10 @@
 			/*Fetching case details for a specific case :: ENDS */
 
 			/* Fetching Case Details On Other Events Too :: STARTS */
-				$(document).on("change","#ps", function(){
+				$(document).on("change","#stakeholder", function(){
 						$("#case_year").trigger("change");
 					
-						var ps=$(this).val();
+						var stakeholder=$(this).val();
 						$("#district").children('option:not(:first)').remove();
 						
 								$.ajax({
@@ -750,14 +965,13 @@
 												url:"entry_form/fetch_district",
 												data: {
 													_token: $('meta[name="csrf-token"]').attr('content'),
-													ps: ps
+													stakeholder:stakeholder
 												},
 												success:function(resonse){                        
 													var obj=$.parseJSON(resonse)
 													
-													$.each(obj['ps_wise_district'],function(index,value){							
-														$("#district").append('<option value="'+value.district_id+'" selected>'+value.district_name+'</option>');
-														$("#district").attr("disabled",true);
+													$.each(obj['stakeholder_wise_district'],function(index,value){							
+														$("#district").append('<option value="'+value.district_id+'">'+value.district_name+'</option>');														
 													})
 
 													$("#district").trigger("change");
@@ -773,7 +987,7 @@
 
 			/* Dispose :: STARTS*/
 			$(document).on("click",".dispose",function(){
-					var ps = $("#ps option:selected").val();
+					var stakeholder = $("#stakeholder option:selected").val();
 					var case_no = $("#case_no").val();
 					var case_year = $("#case_year option:selected").val();
 
@@ -823,7 +1037,7 @@
 													url:"entry_form/dispose", 
 													data: {
 														_token: $('meta[name="csrf-token"]').attr('content'),
-														ps:ps,
+														stakeholder:stakeholder,
 														case_no:case_no,
 														case_year:case_year,
 														narcotic_type:narcotic_type,

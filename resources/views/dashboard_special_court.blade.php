@@ -65,16 +65,17 @@
             <table class="table table-bordered table-responsive display" style="white-space:nowrap;">
               <thead>
                 <tr>
-                  <th style="display:none">PS ID </th>
-                  <th style="display:none">CASE NO </th>
-                  <th style="display:none">CASE YEAR </th>
-                  <th></th>
-                  <th>Sl No. </th>
-                  <th>Stakeholder Name</th>
-                  <th>Case No.</th>                                    
-                  <th>Nature of Narcotic</th>
-                  <th>Certification Status</th>
-                  <th>Disposal Status</th>
+                    <th style="display:none">STAKEHOLDER ID </th>
+                    <th style="display:none">STAKEHOLDER TYPE </th>
+                    <th style="display:none">CASE NO </th>
+                    <th style="display:none">CASE YEAR </th>
+                    <th></th>
+                    <th>Sl No. </th>
+                    <th>Stakeholder Name</th>
+                    <th>Case No.</th>                                    
+                    <th>Nature of Narcotic</th>
+                    <th>Certification Status</th>
+                    <th>Disposal Status</th>
                 </tr>
               </thead>
             </table>
@@ -116,8 +117,10 @@
                       }
                     },
                     "columns": [  
-                      {"class":"ps_id",
-                        "data":"PS ID"},
+                        {"class":"stakeholder_id",
+                        "data":"Stakeholder ID"},
+                      {"class":"stakeholder_type",
+                        "data":"Stakeholder Type"},
                       {"class":"case_no",
                         "data":"Case No"},
                       {"class":"case_year",
@@ -132,9 +135,10 @@
                   ]
             });
 
-            table.column( 0 ).visible( false ); // Hiding the ps id column
-            table.column( 1 ).visible( false ); // Hiding the case no. column
-            table.column( 2 ).visible( false ); // Hiding the case year column
+            table.column( 0 ).visible( false ); // Hiding the Stakeholder ID column
+            table.column( 1 ).visible( false ); // Hiding the Stakeholder Type column
+            table.column( 2 ).visible( false ); // Hiding the Case No. column
+            table.column( 3 ).visible( false ); // Hiding the Case Year column
     }
 
     var month_of_report = $(".month_of_report").val();    
@@ -154,7 +158,8 @@
           var row = table.row(tr);
           var row_data = table.row(tr).data();
 
-          var ps_id = row_data['PS ID'];  
+          var stakeholder_id = row_data['Stakeholder ID'];  
+          var stakeholder_type = row_data['Stakeholder Type']; 
           var case_no = row_data['Case No'];
           var case_year = row_data['Case Year'];
           
@@ -168,7 +173,8 @@
                     url:"dashboard_special_court/fetch_more_details",
                     data:{
                         _token: $('meta[name="csrf-token"]').attr('content'),
-                        ps_id:ps_id,
+                        stakeholder_id:stakeholder_id,
+                        stakeholder_type:stakeholder_type,
                         case_no:case_no,
                         case_year:case_year
                     },
@@ -190,11 +196,7 @@
             element.attr("src","images/details_close.png");
 
             var child_string ="";            
-            child_string += '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-                                '<tr>'+
-                                    '<td><strong>Date of Seizure:</strong></td>'+
-                                    '<td>'+obj['0'].date_of_seizure+'</td>'+
-                                '</tr>'+
+            child_string += '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+                                
                                 '<tr>'+
                                     '<td><strong>Storage Location:</strong></td>'+
                                     '<td>'+obj['0'].storage_name+'</td>'+
@@ -215,7 +217,8 @@
                                 '<thead>'+
                                     '<tr>'+
                                         '<th>Narcotic Type</th>'+
-                                        '<th>Seizure Quantity</th>'+                                        
+                                        '<th>Seizure Quantity</th>'+ 
+                                        '<th>Date of Seizure</th>'+                                        
                                         '<th>Certification Status</th>'+
                                         '<th>Date of Certification</th>'+
                                         '<th>Sample Quantity</th>'+
@@ -237,6 +240,9 @@
                         '<td>'+
                             value.quantity_of_drug+' '+value.seizure_unit+
                         '</td>'+
+                        '<td>'+
+                            value.date_of_seizure+
+                        '</td>'+ 
                         '<td>'+
                             value.certification_flag+
                         '</td>'+

@@ -18,7 +18,7 @@
         <header class="main-header">
         
             <!-- Logo -->
-            @if(Auth::check() && Auth::user()->user_type == 'stakeholder')
+            @if(Auth::check() && Auth::user()->user_type == 'ps')
                 <a href="entry_form" class="logo"> 
             @elseif(Auth::check() && Auth::user()->user_type == 'high_court')
                 <a href="dashboard" class="logo">
@@ -93,8 +93,8 @@
                                 @if(Auth::check() && Auth::user()->user_type == 'high_court')
                                     <li><a href="composite_search_highcourt">Composite Search</a></li>
                                     <li><a href="disposed_undisposed_tally">Disposed Undisposed Tally</a></li>
-                                @elseif(Auth::check() && Auth::user()->user_type == 'stakeholder')
-                                    <li><a href="composite_search_stakeholder">Composite Search</a></li>
+                                @elseif(Auth::check() && Auth::user()->user_type == 'ps')
+                                    <li><a href="composite_search_ps">Composite Search</a></li>
                                 @elseif(Auth::check() && Auth::user()->user_type == 'magistrate')
                                     <li><a href="composite_search_magistrate">Composite Search</a></li>
                                 @elseif(Auth::check() && Auth::user()->user_type == 'special_court')

@@ -118,7 +118,7 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
-        if($user->user_type=='stakeholder'){
+        if($user->user_type=='ps' || $user->user_type=='agency'){
             return redirect('entry_form') ;
         }elseif($user->user_type=='high_court'){
             return redirect('dashboard') ;

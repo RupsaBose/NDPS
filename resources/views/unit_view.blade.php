@@ -12,17 +12,17 @@
         <div class="box-body">
             <div class="row">                
                 <div class="col-md-3 form-group required">
-                    <label class="control-label">Narcotic's Unit</label>
+                    <label class="control-label">Narcotic's Weighing Unit</label>
                     <input type="text" class="form-control" name="narcotic_unit" id="narcotic_unit">
                 </div>
                 <div class="col-md-4 form-group required">
                     <label class="control-label unit_degree">Unit Degree</label><br>
                         <select class="select2"  name="unit_degree" id="unit_degree">
-                             <option value="">Select District</option>
-                             <option value="3">Kg/Kl/ect</option>
-                             <option value="2">Gram/Litre/ect</option>
-                             <option value="1">Mg/Ml/ect</option>
-                             <option value="0">Ampule/pieces/others/ect</option>
+                             <option value="">Select Unit</option>
+                             <option value="3">Kg/Kl/etc</option>
+                             <option value="2">Gram/Litre/etc</option>
+                             <option value="1">Mg/Ml/etc</option>
+                             <option value="0">Ampule/pieces/others/etc</option>
                          </select>
                 </div>
                                 
@@ -81,8 +81,8 @@
 <script>
 
         $(document).ready(function(){
-            
 
+            $(".select2").select2(); // Select2 initialization
 
             /*LOADER*/
 

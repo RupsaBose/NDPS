@@ -16,8 +16,10 @@ class Stakeholder
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::check() && Auth::user()->user_type=='stakeholder')
+        if(Auth::check() && (Auth::user()->user_type=='ps' || Auth::user()->user_type=='agency'))
             return $next($request);
+        else if(Auth::check() && Auth::user()->user_type=='agency')
+            return redirect('dashboard_agency');
         else if(Auth::check() && Auth::user()->user_type=='high_court')
             return redirect('/dashboard');
         else if(Auth::check() && Auth::user()->user_type=='magistrate')

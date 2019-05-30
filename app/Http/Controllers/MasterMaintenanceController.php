@@ -161,8 +161,8 @@ class MasterMaintenanceController extends Controller
                 public function destroy_seizure_stakeholder_record(Request $request)
                 {
                     $id = $request->input('id');
-                    Seizure::where('stakeholder_id',$id)->delete();
-                    User::where('stakeholder_id',$id)->delete();
+                    Seizure::where('agency_id',$id)->delete();
+                    User::where('agency_id',$id)->delete();
                     Agency_detail::where('agency_id',$id)->delete();
                     return 1;
 
@@ -925,6 +925,11 @@ class MasterMaintenanceController extends Controller
                                     ->orderBy('agency_name')
                                     ->get();
 
+            $data['ps_details'] = Ps_detail::select('ps_id','ps_name')
+                                    ->distinct()
+                                    ->orderBy('ps_name')
+                                    ->get();
+
             $data['court_details'] = Court_detail::select('court_id','court_name')
                                     ->distinct()
                                     ->orderBy('court_name')
@@ -946,9 +951,10 @@ class MasterMaintenanceController extends Controller
                 'user_name' => 'required|max:255|unique:users,user_name',
                 'password' => 'required|confirmed|max:255',
                 'user_type' => 'required|max:30',
-                'stakeholder_name' => 'nullable|integer|unique:users,stakeholder_id',
+                'stakeholder_name' => 'nullable|integer|unique:users,agency_id',
                 'court_name' => 'nullable|integer|unique:users,court_id',
                 'district_name' => 'nullable|integer|unique:users,district_id',
+                'ps_name' => 'nullable|integer|unique:users,ps_id',
                 'email_id' => 'nullable|email|max:100|unique:users,email',
                 'contact_no' => 'nullable|integer|unique:users,contact_no'         
             ] ); 
@@ -958,9 +964,10 @@ class MasterMaintenanceController extends Controller
             $user_name = $request->input('user_name');
             $password = Hash::make($request->input('password'));
             $user_type = $request->input('user_type');
-            $stakeholder_name = $request->input('stakeholder_name');
+            $agency_name = $request->input('agency_name');
             $court_name = $request->input('court_name');
             $district_name = $request->input('district_name');
+            $ps_name = $request->input('ps_name');
             $email = $request->input('email_id');
             $phno = $request->input('contact_no');
             $created_at = Carbon::today();
@@ -970,7 +977,8 @@ class MasterMaintenanceController extends Controller
                     'user_id' => $user_id,
                     'user_name' => $user_name,
                     'password' => $password,
-                    'stakeholder_id' => $stakeholder_name,
+                    'agency_id' => $agency_name,
+                    'ps_id' => $ps_name,
                     'court_id' => $court_name,
                     'district_id' => $district_name,
                     'email' => $email,

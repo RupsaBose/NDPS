@@ -149,7 +149,9 @@
                                $("#narcotic_name").val('');
                                $("#narcotic_unit").val('');
                                swal("Added Successfully","A new narcotic has been added","success");
-                               table.api().ajax.reload();   
+                               setTimeout(function(){
+                                    window.location.reload(true);
+                                },2000);  
                             }
                         
 

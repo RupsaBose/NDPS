@@ -209,21 +209,37 @@ use App\User;
        Route::post('composite_search_highcourt/fetch_more_details',
         'SearchController@fetch_case_details');
 
-       
-
        //Composite Search ::Ends
+
 
        // Disposed Undisposed Tally :Starts
 
        Route::get('disposed_undisposed_tally',function(){
-        return view ('disposed_undisposed_tally');
-    });
+            return view ('disposed_undisposed_tally');
+       });
+
+       Route::post('disposed_undisposed_tally/district_court_report',
+        'SearchController@calhc_district_court_report');
+
+        Route::post('disposed_undisposed_tally/stakeholder_report',
+        'SearchController@calhc_stakeholder_report');
+
+        Route::post('disposed_undisposed_tally/storage_report',
+        'SearchController@calhc_storage_report');
+
+        Route::post('disposed_undisposed_tally/fetch_more_details_district_court_report',
+        'SearchController@calhc_fetch_more_details_district_court_report');
+
+        Route::post('disposed_undisposed_tally/fetch_more_details_storage_report',
+        'SearchController@calhc_fetch_more_details_storage_report');
+        
 
        // Disposed Undisposed Tally Ends
 
     });
 
 
+    
     Route::group(['middleware' => ['auth','stakeholder']], function () {
 
         //Entry form::start
@@ -232,21 +248,25 @@ use App\User;
 
         Route::post('entry_form/narcotic_units','entry_formController@narcotic_units');
 
+        Route::post('entry_form/fetch_narcotics','entry_formController@fetch_narcotics');
+
+        Route::post('entry_form/add_new_seizure_details','entry_formController@add_new_seizure_details');
+
         Route::post('entry_form/fetch_court',
         'entry_formController@district_wise_court');
 
         Route::post('entry_form/fetch_district',
-        'entry_formController@ps_wise_district');
+        'entry_formController@stakeholder_wise_district');
 
         Route::post('entry_form/fetch_case_details','entry_formController@fetch_case_details');
 
-        Route::post('entry_form/dispose','entry_formController@dispose');
-       
+        Route::post('entry_form/dispose','entry_formController@dispose');               
 
        //Entry form::end
         
 
     });
+    
 
 
     Route::group(['middleware' => ['auth','magistrate']], function () {

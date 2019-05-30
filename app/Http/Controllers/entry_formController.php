@@ -30,12 +30,23 @@ class entry_formController extends Controller
      */
     public function index()
     {
-        $agency_id =Auth::user()->stakeholder_id;
+        $user_type = Auth::user()->user_type;
 
         $data = array();
         
-        $data['ps'] = Ps_detail::select('ps_id','ps_name')
-                                ->get();
+        if($user_type=='ps'){
+            $ps_id = Auth::user()->ps_id;
+            $data['stakeholders'] = Ps_detail::where('ps_id',$ps_id)
+                                            ->select('ps_id as stakeholder_id','ps_name as stakeholder_name')
+                                            ->get();
+        }
+        else if($user_type=='agency'){
+            $agency_id = Auth::user()->agency_id;
+            $data['stakeholders'] = Agency_detail::where('agency_id',$agency_id)
+                                                ->select('agency_id as stakeholder_id','agency_name as stakeholder_name')
+                                                ->get();
+        }
+
         $data['narcotics'] = Narcotic::where('display','Y')
                                         ->select('drug_id','drug_name')
                                         ->get();
@@ -67,7 +78,7 @@ class entry_formController extends Controller
     public function store(Request $request)
     {
         $this->validate( $request, [ 
-            'ps' => 'required|integer',
+            'stakeholder' => 'required|integer',
             'case_no' => 'required|integer',
             'case_year' => 'required|integer',
             'narcotic_type' => 'required|array',
@@ -83,20 +94,20 @@ class entry_formController extends Controller
             'district' => 'required|integer',         
             'court' => 'required|integer',
         ] ); 
-
-        // $v = Validator::make($request, [
-        //     'flag_other_narcotic' => 'required|integer'
-        // ]);
-
-        // $v->sometimes('other_narcotic_name', 'required|max:255', function ($input) {
-        //     return $input->flag_other_narcotic = 1;
-        // });
        
-        $ps = $request->input('ps'); 
+        $user_type = Auth::user()->user_type;
+        
+        if($user_type=="ps"){
+            $ps = $request->input('stakeholder');
+            $agency_id = null;
+        }
+        else if($user_type=="agency"){
+            $agency_id = $request->input('stakeholder');
+            $ps = null;
+        } 
         $case_no = $request->input('case_no'); 
         $case_year = $request->input('case_year'); 
-        $narcotic_type = $request->input('narcotic_type'); 
-        //$seizure_date = Carbon::parse($request->input('seizure_date'))->format('Y-m-d'); 
+        $narcotic_type = $request->input('narcotic_type');         
         $seizure_date = $request->input('seizure_date'); 
         $seizure_quantity =$request->input('seizure_quantity'); 
         $seizure_weighing_unit = $request->input('seizure_weighing_unit');
@@ -106,7 +117,6 @@ class entry_formController extends Controller
         $court = $request->input('court');
         $certification_flag='N';
         $disposal_flag='N';
-        $agency_id= Auth::user()->stakeholder_id;
         $user_name=Auth::user()->user_name;
         $update_date = Carbon::today();  
         $uploaded_date = Carbon::today();  
@@ -175,7 +185,7 @@ class entry_formController extends Controller
                         'seizure_quantity_weighing_unit_id'=>$seizure_weighing_unit[$i],
                         'date_of_seizure'=>date('Y-m-d', strtotime($seizure_date[$i])),
                         'storage_location_id'=>$storage,
-                        'stakeholder_id'=>$agency_id,
+                        'agency_id'=>$agency_id,
                         'district_id'=>$district,
                         'certification_court_id'=>$court,
                         'certification_flag'=>$certification_flag,
@@ -256,13 +266,21 @@ class entry_formController extends Controller
     }
 
     // PS wise District fetching
-    public function ps_wise_district(Request $request){
+    public function stakeholder_wise_district(Request $request){
+        $user_type = Auth::user()->user_type;
 
-        $ps = $request->input('ps'); 
+        if($user_type=="ps"){
 
-        $data['ps_wise_district']=Ps_detail::join("districts","ps_details.district_id","=","districts.district_id")
-                                    ->where('ps_id','=', $ps )
-                                    ->get();
+            $stakeholder_id = $request->input('stakeholder'); 
+
+            $data['stakeholder_wise_district']=Ps_detail::join("districts","ps_details.district_id","=","districts.district_id")
+                                        ->where('ps_id','=', $stakeholder_id)
+                                        ->get();
+        }
+        else if($user_type=="agency"){
+            $data['stakeholder_wise_district']=District::orderBy('district_name')
+                                                ->get();
+        }
 
           
 
@@ -311,12 +329,14 @@ class entry_formController extends Controller
 
     //Fetch case details of a specific case no.
     public function fetch_case_details(Request $request){
-        $ps = $request->input('ps');
+        $stakeholder = $request->input('stakeholder');
         $case_no = $request->input('case_no');
         $case_year = $request->input('case_year');
 
-        $data['case_details'] = Seizure::join('ps_details','seizures.ps_id','=','ps_details.ps_id')
-                        ->join('agency_details','seizures.stakeholder_id','=','agency_details.agency_id')
+        $user_type = Auth::user()->user_type;
+        
+        if($user_type=="ps"){
+            $data['case_details'] = Seizure::join('ps_details','seizures.ps_id','=','ps_details.ps_id')                        
                         ->join('narcotics','seizures.drug_id','=','narcotics.drug_id')
                         ->join('units AS u1','seizures.seizure_quantity_weighing_unit_id','=','u1.unit_id')
                         ->leftjoin('units AS u2','seizures.sample_quantity_weighing_unit_id','=','u2.unit_id')
@@ -324,15 +344,36 @@ class entry_formController extends Controller
                         ->join('storage_details','seizures.storage_location_id','=','storage_details.storage_id')
                         ->join('court_details','seizures.certification_court_id','=','court_details.court_id')
                         ->join('districts','seizures.district_id','=','districts.district_id')
-                        ->where([['seizures.ps_id',$ps],['seizures.case_no',$case_no],['seizures.case_year',$case_year]])                        
+                        ->where([['seizures.ps_id',$stakeholder],['seizures.case_no',$case_no],['seizures.case_year',$case_year]])                        
                         ->select('drug_name','narcotics.display','narcotics.drug_id','quantity_of_drug','seizure_quantity_weighing_unit_id',
                                 'u1.unit_name AS seizure_unit','date_of_seizure','date_of_disposal',
                                 'disposal_quantity','disposal_flag','u3.unit_name AS disposal_unit','storage_name',
                                 'court_name','districts.district_id','district_name','date_of_certification',
                                 'certification_flag','quantity_of_sample','u2.unit_name AS sample_unit',
-                                'remarks','magistrate_remarks')
+                                'remarks','magistrate_remarks', 'storage_location_id', 'seizures.certification_court_id')
                         ->get();
 
+        }
+        else if($user_type=="agency"){
+            $data['case_details'] = Seizure::join('agency_details','seizures.agency_id','=','agency_details.agency_id')
+                        ->join('narcotics','seizures.drug_id','=','narcotics.drug_id')
+                        ->join('units AS u1','seizures.seizure_quantity_weighing_unit_id','=','u1.unit_id')
+                        ->leftjoin('units AS u2','seizures.sample_quantity_weighing_unit_id','=','u2.unit_id')
+                        ->leftjoin('units AS u3','seizures.disposal_quantity_weighing_unit_id','=','u3.unit_id')
+                        ->join('storage_details','seizures.storage_location_id','=','storage_details.storage_id')
+                        ->join('court_details','seizures.certification_court_id','=','court_details.court_id')
+                        ->join('districts','seizures.district_id','=','districts.district_id')
+                        ->where([['seizures.agency_id',$stakeholder],['seizures.case_no',$case_no],['seizures.case_year',$case_year]])                        
+                        ->select('drug_name','narcotics.display','narcotics.drug_id','quantity_of_drug','seizure_quantity_weighing_unit_id',
+                                'u1.unit_name AS seizure_unit','date_of_seizure','date_of_disposal',
+                                'disposal_quantity','disposal_flag','u3.unit_name AS disposal_unit','storage_name',
+                                'court_name','districts.district_id','district_name','date_of_certification',
+                                'certification_flag','quantity_of_sample','u2.unit_name AS sample_unit',
+                                'remarks','magistrate_remarks', 'storage_location_id', 'seizures.certification_court_id')
+                        ->get();
+
+        }
+        
         foreach($data['case_details'] as $case_details){
             $case_details->date_of_seizure = Carbon::parse($case_details->date_of_seizure)->format('d-m-Y');
             if($case_details->certification_flag=='Y')
@@ -351,7 +392,7 @@ class entry_formController extends Controller
     public function dispose(Request $request){
         
         $this->validate ( $request, [ 
-            'ps' => 'required|integer',
+            'stakeholder' => 'required|integer',
             'case_no' => 'required|integer',
             'case_year' => 'required|integer',
             'narcotic_type' => 'required|integer',
@@ -359,8 +400,9 @@ class entry_formController extends Controller
             'disposal_quantity' => 'required|numeric',
             'disposal_weighing_unit' => 'required|integer'
         ] ); 
-           
-        $ps = $request->input('ps'); 
+
+        $user_type = Auth::user()->user_type;        
+         
         $case_no = $request->input('case_no'); 
         $case_year = $request->input('case_year');
         $narcotic_type = $request->input('narcotic_type');
@@ -376,15 +418,133 @@ class entry_formController extends Controller
             'updated_at'=>Carbon::today()
         ];
 
-        Seizure::where([['ps_id',$ps],
+        if($user_type=="ps"){
+            $ps = $request->input('stakeholder');
+
+            Seizure::where([['ps_id',$ps],
                         ['case_no',$case_no],
                         ['case_year',$case_year],
                         ['drug_id',$narcotic_type]
-                ])->update($data);
+                    ])->update($data);
+        
+        }
+        else if($user_type=="agency"){
+            $agency_id = $request->input('stakeholder');
+
+            Seizure::where([['agency_id',$agency_id],
+                        ['case_no',$case_no],
+                        ['case_year',$case_year],
+                        ['drug_id',$narcotic_type]
+                    ])->update($data);
+        
+        }        
         
         return 1;
         
-    }    
+    }   
+    
+    
+    // Fetching all narcotics
+    public function fetch_narcotics(Request $request){
+        $data = Narcotic::where('display','Y')
+                        ->select('drug_id','drug_name')
+                        ->get();
+
+        echo json_encode($data);
+    }
+
+    // Save New Seizure Details 
+    public function add_new_seizure_details(Request $request){
+
+        $this->validate( $request, [ 
+            'narcotic_type' => 'required|integer',
+            'seizure_date' => 'required|date',
+            'seizure_quantity' => 'required|numeric',
+            'seizure_weighing_unit' => 'required|integer',
+        ] ); 
+
+        $user_type = Auth::user()->user_type;
+        
+        if($user_type=="ps"){
+            $ps = $request->input('stakeholder');
+            $agency_id = null;
+        }
+        else if($user_type=="agency"){
+            $agency_id = $request->input('stakeholder');
+            $ps = null;
+        }
+        $case_no = $request->input('case_no');
+        $case_year = $request->input('case_year');
+        $narcotic_type = $request->input('narcotic_type');
+        $seizure_date = Carbon::parse($request->input('seizure_date'))->format('Y-m-d');
+        $seizure_quantity = $request->input('seizure_quantity');
+        $seizure_weighing_unit = $request->input('seizure_weighing_unit');
+        $other_narcotic_name = $request->input('other_narcotic_name');
+        $flag_other_narcotic = $request->input('flag_other_narcotic');
+        $narcotic_type = $request->input('narcotic_type');
+        $seizure_date = $request->input('seizure_date');
+        $seizure_quantity = $request->input('seizure_quantity');
+        $seizure_weighing_unit = $request->input('seizure_weighing_unit');
+        $storage = $request->input('storage');
+        $district = $request->input('district');
+        $court = $request->input('court');
+        $remark = $request->input('remark');
+        $certification_flag='N';
+        $disposal_flag='N';
+        $user_name=Auth::user()->user_name;
+        $update_date = Carbon::today();  
+        $uploaded_date = Carbon::today(); 
+
+        
+        if($flag_other_narcotic==1){
+
+            $count = Narcotic::where('drug_name','ILIKE',trim($other_narcotic_name))
+                                ->count();
+
+            if($count<1){
+
+                Narcotic::insert([
+                    'drug_name' => trim($other_narcotic_name),
+                    'display' => 'N',
+                    'created_at'=>Carbon::today(),
+                    'updated_at'=>Carbon::today()
+                ]);
+
+                $max_narcotic_value = Narcotic::max('drug_id');
+                $narcotic_type = $max_narcotic_value;
+            }
+            else{
+                $drug_id = Narcotic::where('drug_name','ILIKE',trim($other_narcotic_name))
+                                    ->max('drug_id');
+                $narcotic_type = $drug_id;
+            }
+        }
+
+        seizure::insert(
+                [
+                    'ps_id'=>$ps,
+                    'case_no'=>$case_no,
+                    'case_year'=>$case_year,
+                    'drug_id'=> $narcotic_type,
+                    'quantity_of_drug'=>$seizure_quantity,
+                    'seizure_quantity_weighing_unit_id'=>$seizure_weighing_unit,
+                    'date_of_seizure'=>Date('Y-m-d', strtotime($seizure_date)),
+                    'storage_location_id'=>$storage,
+                    'agency_id'=>$agency_id,
+                    'district_id'=>$district,
+                    'certification_court_id'=>$court,
+                    'certification_flag'=>$certification_flag,
+                    'disposal_flag'=>$disposal_flag,
+                    'remarks'=>$remark,
+                    'user_name'=>$user_name,
+                    'created_at'=>$uploaded_date,
+                    'updated_at'=>$update_date
+                ]
+
+            );
+
+        return 1;
+    }
     
     
 }

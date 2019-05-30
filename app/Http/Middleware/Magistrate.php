@@ -18,7 +18,7 @@ class Magistrate
     {
         if(Auth::check() && Auth::user()->user_type=='magistrate')
             return $next($request);
-        else if(Auth::check() && Auth::user()->user_type=='stakeholder')
+        else if(Auth::check() && (Auth::user()->user_type=='ps' || Auth::user()->user_type=='agency'))
             return redirect('entry_form');
         else if(Auth::check() && Auth::user()->user_type=='special_court')
             return redirect('dashboard_special_court');

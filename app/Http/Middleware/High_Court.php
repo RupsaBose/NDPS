@@ -18,7 +18,7 @@ class High_Court
     {
         if(Auth::check() && Auth::user()->user_type=='high_court')
             return $next($request);
-        else if(Auth::check() && Auth::user()->user_type=='stakeholder')
+        else if(Auth::check() && (Auth::user()->user_type=='ps' || Auth::user()->user_type=='agency'))
             return redirect('entry_form');
         else if(Auth::check() && Auth::user()->user_type=='magistrate')
             return redirect('magistrate_entry_form');

@@ -365,125 +365,125 @@
             // Searching Code :: ENDS
 
              // Fetching More Details About a Case
-    $(document).on("click",".more_details",function(){  
-          var element = $(this);        
-          var tr = element.closest('tr');
-          var row = table.row(tr);
-          var row_data = table.row(tr).data();
+            $(document).on("click",".more_details",function(){  
+                var element = $(this);        
+                var tr = element.closest('tr');
+                var row = table.row(tr);
+                var row_data = table.row(tr).data();
 
-          var ps_id = row_data['PS ID'];  
-          var case_no = row_data['Case No'];
-          var case_year = row_data['Case Year'];
-          
-          var obj;
+                var ps_id = row_data['PS ID'];  
+                var case_no = row_data['Case No'];
+                var case_year = row_data['Case Year'];
+                
+                var obj;
 
-    // fetch case details only when the child row is hide
-        if(!row.child.isShown()){ 
+            // fetch case details only when the child row is hide
+                if(!row.child.isShown()){ 
 
-                $.ajax({
-                    type:"POST",
-                    url:"composite_search_highcourt/fetch_more_details",
-                    data:{
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                        ps_id:ps_id,
-                        case_no:case_no,
-                        case_year:case_year
-                    },
-                    success:function(response){
-                        obj = $.parseJSON(response);              
-                    },
-                    error:function(response){
-                        console.log(response);
-                    },
-                    async: false
-                }) 
-        }
+                        $.ajax({
+                            type:"POST",
+                            url:"composite_search_highcourt/fetch_more_details",
+                            data:{
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                ps_id:ps_id,
+                                case_no:case_no,
+                                case_year:case_year
+                            },
+                            success:function(response){
+                                obj = $.parseJSON(response);              
+                            },
+                            error:function(response){
+                                console.log(response);
+                            },
+                            async: false
+                        }) 
+                }
 
-        if(row.child.isShown() ) {
-            element.attr("src","images/details_open.png");
-            row.child.hide();
-        }
-        else {
-            element.attr("src","images/details_close.png");
+                if(row.child.isShown() ) {
+                    element.attr("src","images/details_open.png");
+                    row.child.hide();
+                }
+                else {
+                    element.attr("src","images/details_close.png");
 
-            var child_string ="";            
-            child_string += '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-                                '<tr>'+
-                                    '<td><strong>Date of Seizure:</strong></td>'+
-                                    '<td>'+obj['0'].date_of_seizure+'</td>'+
-                                '</tr>'+
-                                '<tr>'+
-                                    '<td><strong>Storage Location:</strong></td>'+
-                                    '<td>'+obj['0'].storage_name+'</td>'+
-                                '</tr>'+
-                                '<tr>'+
-                                    '<td><strong>Case Details / Remarks:</strong></td>'+
-                                    '<td>'+obj['0'].remarks+'</td>'+
-                                '</tr>'+
-                                '<tr>'+
-                                    '<td><strong>Certification Court:</strong></td>'+
-                                    '<td>'+obj['0'].court_name+'</td>'+
-                                '</tr>'+
-                            '</table>'+
+                    var child_string ="";            
+                    child_string += '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+                                        '<tr>'+
+                                            '<td><strong>Date of Seizure:</strong></td>'+
+                                            '<td>'+obj['0'].date_of_seizure+'</td>'+
+                                        '</tr>'+
+                                        '<tr>'+
+                                            '<td><strong>Storage Location:</strong></td>'+
+                                            '<td>'+obj['0'].storage_name+'</td>'+
+                                        '</tr>'+
+                                        '<tr>'+
+                                            '<td><strong>Case Details / Remarks:</strong></td>'+
+                                            '<td>'+obj['0'].remarks+'</td>'+
+                                        '</tr>'+
+                                        '<tr>'+
+                                            '<td><strong>Certification Court:</strong></td>'+
+                                            '<td>'+obj['0'].court_name+'</td>'+
+                                        '</tr>'+
+                                    '</table>'+
 
-                            '<br>'+
-            
-                            '<table class="table table-bordered table-responsive">'+
-                                '<thead>'+
-                                    '<tr>'+
-                                        '<th>Narcotic Type</th>'+
-                                        '<th>Seizure Quantity</th>'+                                        
-                                        '<th>Certification Status</th>'+
-                                        '<th>Date of Certification</th>'+
-                                        '<th>Sample Quantity</th>'+
-                                        '<th>Magistrate Remarks</th>'+
-                                        '<th>Disposal Status</th>'+
-                                        '<th>Date of Disposal</th>'+
-                                        '<th>Disposal Quantity</th>'+
-                                    '</tr>'+
-                                '</thead>'+
-                                
-                                '<tbody>';
+                                    '<br>'+
+                    
+                                    '<table class="table table-bordered table-responsive">'+
+                                        '<thead>'+
+                                            '<tr>'+
+                                                '<th>Narcotic Type</th>'+
+                                                '<th>Seizure Quantity</th>'+                                        
+                                                '<th>Certification Status</th>'+
+                                                '<th>Date of Certification</th>'+
+                                                '<th>Sample Quantity</th>'+
+                                                '<th>Magistrate Remarks</th>'+
+                                                '<th>Disposal Status</th>'+
+                                                '<th>Date of Disposal</th>'+
+                                                '<th>Disposal Quantity</th>'+
+                                            '</tr>'+
+                                        '</thead>'+
+                                        
+                                        '<tbody>';
 
-            $.each(obj,function(key,value){
-                child_string += ""+
-                    '<tr>'+ 
-                        '<td>'+
-                            value.drug_name+
-                        '</td>'+                               
-                        '<td>'+
-                            value.quantity_of_drug+' '+value.seizure_unit+
-                        '</td>'+
-                        '<td>'+
-                            value.certification_flag+
-                        '</td>'+
-                        '<td>'+
-                            value.date_of_certification+
-                        '</td>'+                                
-                        '<td>'+
-                            value.quantity_of_sample+' '+value.sample_unit+
-                        '</td>'+
-                        '<td>'+
-                            value.magistrate_remarks+
-                        '</td>'+
-                        '<td>'+
-                            value.disposal_flag+
-                        '</td>'+
-                        '<td>'+
-                            value.date_of_disposal+
-                        '</td>'+
-                        '<td>'+
-                            value.disposal_quantity+' '+value.disposal_unit+
-                        '</td>'+
-                    '</tr>';
+                    $.each(obj,function(key,value){
+                        child_string += ""+
+                            '<tr>'+ 
+                                '<td>'+
+                                    value.drug_name+
+                                '</td>'+                               
+                                '<td>'+
+                                    value.quantity_of_drug+' '+value.seizure_unit+
+                                '</td>'+
+                                '<td>'+
+                                    value.certification_flag+
+                                '</td>'+
+                                '<td>'+
+                                    value.date_of_certification+
+                                '</td>'+                                
+                                '<td>'+
+                                    value.quantity_of_sample+' '+value.sample_unit+
+                                '</td>'+
+                                '<td>'+
+                                    value.magistrate_remarks+
+                                '</td>'+
+                                '<td>'+
+                                    value.disposal_flag+
+                                '</td>'+
+                                '<td>'+
+                                    value.date_of_disposal+
+                                '</td>'+
+                                '<td>'+
+                                    value.disposal_quantity+' '+value.disposal_unit+
+                                '</td>'+
+                            '</tr>';
+                    })
+
+                    child_string +='</tbody></table>';
+
+                    row.child(child_string).show();
+                }
+
             })
-
-            child_string +='</tbody></table>';
-
-            row.child(child_string).show();
-        }
-
-    })
             
         });
     </script>

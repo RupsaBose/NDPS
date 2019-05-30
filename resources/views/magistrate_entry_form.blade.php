@@ -28,10 +28,13 @@
                             <div class="form-group required row">
                                 <label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Case No.</label>
                                 <div class="col-sm-3">
-                                    <select class="form-control select2" id="ps">
-                                        <option value="">Select PS</option>
+                                    <select class="form-control select2" id="stakeholder">
+                                        <option value="">Select Stakeholder</option>
                                         @foreach($data['ps'] as $ps)
-                                            <option value="{{$ps->ps_id}}">{{$ps->ps_name}}</option>
+                                            <option data-stakeholder_type="ps" value="{{$ps->ps_id}}">{{$ps->ps_name}}</option>
+                                        @endforeach
+                                        @foreach($data['agencies'] as $agency)
+                                            <option data-stakeholder_type="agency" value="{{$agency->agency_id}}">{{$agency->agency_name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -120,7 +123,8 @@
               <table class="table table-bordered table-responsive display" style="white-space:nowrap;">
                 <thead>
                   <tr>
-                    <th style="display:none">PS ID </th>
+                    <th style="display:none">STAKEHOLDER ID </th>
+                    <th style="display:none">STAKEHOLDER TYPE </th>
                     <th style="display:none">CASE NO </th>
                     <th style="display:none">CASE YEAR </th>
                     <th></th>
@@ -194,17 +198,19 @@
 
     /*Fetching case details for a specific case :: STARTS */
     $(document).on("change","#case_year", function(){
-            var ps = $("#ps option:selected").val();
+            var stakeholder = $("#stakeholder option:selected").val();
+            var stakeholder_type = $("#stakeholder option:selected").data('stakeholder_type');
             var case_no = $("#case_no").val();
             var case_year = $("#case_year option:selected").val();
 
-            if(ps!="" && case_no!="" && case_year!=""){
+            if(stakeholder!="" && case_no!="" && case_year!=""){
                     $.ajax({
                         type:"POST",
                         url:"magistrate_entry_form/fetch_case_details",
                         data:{
                             _token: $('meta[name="csrf-token"]').attr('content'),
-                            ps:ps,
+                            stakeholder:stakeholder,
+                            stakeholder_type:stakeholder_type,
                             case_no:case_no,
                             case_year:case_year
                         },
@@ -212,7 +218,7 @@
                             var obj = $.parseJSON(response);
                             
                             if(obj['case_details'].length>0){
-                                $("#ps").attr('disabled',true);
+                                $("#stakeholder").attr('disabled',true);
                                 $("#case_no").attr('readonly',true);
                                 $("#case_year").attr('disabled',true);
 
@@ -424,7 +430,7 @@
 
 
     /* Fetching Case Details On Other Events Too :: STARTS */
-    $(document).on("change","#ps", function(){
+    $(document).on("change","#stakeholder", function(){
         $("#case_year").trigger("change");
     })
 
@@ -454,8 +460,10 @@
                       }
                     },
                     "columns": [  
-                      {"class":"ps_id",
-                        "data":"PS ID"},
+                      {"class":"stakeholder_id",
+                        "data":"Stakeholder ID"},
+                      {"class":"stakeholder_type",
+                        "data":"Stakeholder Type"},
                       {"class":"case_no",
                         "data":"Case No"},
                       {"class":"case_year",
@@ -470,9 +478,10 @@
                   ]
             });
 
-            table.column( 0 ).visible( false ); // Hiding the ps id column
-            table.column( 1 ).visible( false ); // Hiding the case no. column
-            table.column( 2 ).visible( false ); // Hiding the case year column
+            table.column( 0 ).visible( false ); // Hiding the Stakeholder ID column
+            table.column( 1 ).visible( false ); // Hiding the Stakeholder Type column
+            table.column( 2 ).visible( false ); // Hiding the Case No. column
+            table.column( 3 ).visible( false ); // Hiding the Case Year column
     }
 
     var month_of_report = $(".month_of_report").val();    
@@ -492,7 +501,8 @@
           var row = table.row(tr);
           var row_data = table.row(tr).data();
 
-          var ps_id = row_data['PS ID'];  
+          var stakeholder_id = row_data['Stakeholder ID'];  
+          var stakeholder_type = row_data['Stakeholder Type']; 
           var case_no = row_data['Case No'];
           var case_year = row_data['Case Year'];
           
@@ -506,7 +516,8 @@
                     url:"magistrate_entry_form/fetch_more_details",
                     data:{
                         _token: $('meta[name="csrf-token"]').attr('content'),
-                        ps_id:ps_id,
+                        stakeholder_id:stakeholder_id,
+                        stakeholder_type:stakeholder_type,
                         case_no:case_no,
                         case_year:case_year
                     },
@@ -528,11 +539,7 @@
             element.attr("src","images/details_close.png");
 
             var child_string ="";            
-            child_string += '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-                                '<tr>'+
-                                    '<td><strong>Date of Seizure:</strong></td>'+
-                                    '<td>'+obj['0'].date_of_seizure+'</td>'+
-                                '</tr>'+
+            child_string += '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+                                
                                 '<tr>'+
                                     '<td><strong>Storage Location:</strong></td>'+
                                     '<td>'+obj['0'].storage_name+'</td>'+
@@ -549,7 +556,8 @@
                                 '<thead>'+
                                     '<tr>'+
                                         '<th>Narcotic Type</th>'+
-                                        '<th>Seizure Quantity</th>'+                                        
+                                        '<th>Seizure Quantity</th>'+ 
+                                        '<th>Date of Seizure</th>'+                                       
                                         '<th>Certification Status</th>'+
                                         '<th>Date of Certification</th>'+
                                         '<th>Sample Quantity</th>'+
@@ -571,6 +579,9 @@
                                 '<td>'+
                                     value.quantity_of_drug+' '+value.seizure_unit+
                                 '</td>'+
+                                '<td>'+
+                                    value.date_of_seizure+
+                                '</td>'+ 
                                 '<td>'+
                                     value.certification_flag+
                                 '</td>'+
@@ -605,7 +616,8 @@
 
     /*Certify ::STARTS*/
     $(document).on("click",".certify",function(){
-        var ps = $("#ps option:selected").val();
+        var stakeholder = $("#stakeholder option:selected").val();
+        var stakeholder_type = $("#stakeholder option:selected").data('stakeholder_type');
         var case_no = $("#case_no").val();
         var case_year = $("#case_year option:selected").val();
 
@@ -663,7 +675,8 @@
                                         url:"magistrate_entry_form/certify", 
                                         data: {
                                             _token: $('meta[name="csrf-token"]').attr('content'),
-                                            ps:ps,
+                                            stakeholder:stakeholder,
+                                            stakeholder_type:stakeholder_type,
                                             case_no:case_no,
                                             case_year:case_year,
                                             narcotic_type:narcotic_type,

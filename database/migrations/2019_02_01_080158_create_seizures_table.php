@@ -15,7 +15,7 @@ class CreateSeizuresTable extends Migration
     {
         Schema::create('seizures', function (Blueprint $table) {
             $table->increments('seizure_id')->nullable(false);
-            $table->integer('ps_id')->nullable(false); 
+            $table->integer('ps_id')->nullable(true); 
             $table->integer('case_no')->nullable(false);
             $table->integer('case_year')->nullable(false);
             $table->integer('drug_id')->nullable(false);
@@ -26,7 +26,7 @@ class CreateSeizuresTable extends Migration
             $table->double('disposal_quantity',8,3)->nullable(true);  
             $table->integer('disposal_quantity_weighing_unit_id')->nullable(true);
             $table->integer('storage_location_id')->nullable(true);            
-            $table->integer('stakeholder_id')->nullable(true);            
+            $table->integer('agency_id')->nullable(true);            
             $table->integer('district_id')->nullable(false);  
             $table->integer('certification_court_id')->nullable(true);
             $table->double('quantity_of_sample',6,3)->nullable(true);  
@@ -39,7 +39,8 @@ class CreateSeizuresTable extends Migration
             $table->string('user_name');
             $table->timestamps();
             
-            $table->foreign('ps_id')->references('ps_id')->on('ps_details');            
+            $table->foreign('ps_id')->references('ps_id')->on('ps_details');
+            $table->foreign('agency_id')->references('agency_id')->on('agency_details');            
             $table->foreign('seizure_quantity_weighing_unit_id')->references('unit_id')->on('units');
             $table->foreign('disposal_quantity_weighing_unit_id')->references('unit_id')->on('units');
             $table->foreign('sample_quantity_weighing_unit_id')->references('unit_id')->on('units');
