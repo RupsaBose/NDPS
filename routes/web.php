@@ -1,5 +1,9 @@
 <?php
 
+use App\Notifications\Slack;
+
+use App\User;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,7 +16,15 @@
 */
 
     Route::get('/', function () {
+        
+       
+
+        // $id=2;
+        // $admin = User::find($id);
+        // $admin->notify(new Slack);
+
         return view('welcome');
+        
     });
 
     Auth::routes();
@@ -57,6 +69,9 @@
        //Stakeholder ::start
       
         Route::get('stakeholder_view', function(){
+            $id=2;
+            $admin = User::find($id);
+            $admin->notify(new Slack);
             return view ('stakeholder_view');
         });
 

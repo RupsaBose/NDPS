@@ -284,3 +284,11 @@ FROM
 )c GROUP BY drug_name,quantity_unit_name 
 
 ---------------------------------------------------------
+
+select pg_size_pretty(pg_database_size('ndps'))
+
+
+
+-----------------------------------------------------------
+
+select pg_size_pretty(pg_total_relation_size('seizures'))
