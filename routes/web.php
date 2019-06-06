@@ -69,9 +69,9 @@ use App\User;
        //Stakeholder ::start
       
         Route::get('stakeholder_view', function(){
-            $id=2;
-            $admin = User::find($id);
-            $admin->notify(new Slack);
+            // $id=2;
+            // $admin = User::find($id);
+            // $admin->notify(new Slack);
             return view ('stakeholder_view');
         });
 
