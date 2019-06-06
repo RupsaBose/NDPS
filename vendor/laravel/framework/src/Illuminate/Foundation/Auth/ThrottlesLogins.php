@@ -106,7 +106,7 @@ trait ThrottlesLogins
      */
     public function maxAttempts()
     {
-        return property_exists($this, 'maxAttempts') ? $this->maxAttempts : 5;
+        return property_exists($this, 'maxAttempts') ? $this->maxAttempts : 3;
     }
 
     /**
@@ -116,6 +116,6 @@ trait ThrottlesLogins
      */
     public function decayMinutes()
     {
-        return property_exists($this, 'decayMinutes') ? $this->decayMinutes : 1;
+        return property_exists($this, 'decayMinutes') ? $this->decayMinutes : 5;
     }
 }

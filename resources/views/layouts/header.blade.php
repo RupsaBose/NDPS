@@ -151,4 +151,13 @@
         </div>
         <!-- /.content-wrapper -->
 
+         <!-- For Session Timeout For Inactive Window STARTS -->
+        <div style="display:none;">
+            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                @csrf
+                <input type="submit" id="submit">
+            </form>
+        </div>
+        <!-- For Session Timeout For Inactive Window ENDS -->
+        
         @include('layouts.js_links')

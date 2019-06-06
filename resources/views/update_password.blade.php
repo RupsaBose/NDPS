@@ -94,14 +94,6 @@
                             }).then(function(){
                                 $("#submit").trigger("click");
                             });
-
-                            // setTimeout(function(){
-                            //     // $("#logout-form").submit(function( event ) {
-                            //     // // event.preventDefault();
-                            //     // });
-                            
-                            // },1700);
-                            
                         }
                         else if(response==0)
                         {
