@@ -24,8 +24,7 @@ use App\User;
         // $admin->notify(new Slack);
 
         return view('welcome');
-        
-    });
+    })->middleware('guest');;
 
     Auth::routes();
         

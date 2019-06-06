@@ -17,7 +17,10 @@ class Magistrate
     public function handle($request, Closure $next)
     {
         if(Auth::check() && Auth::user()->user_type=='magistrate')
-            return $next($request);
+            return $next($request)->header('Cache-Control','no-cache, no-store, max-age=0, must-revalidate')
+            ->header('Pragma','no-cache')
+            ->header('Expires','Sun, 02 Jan 1990 00:00:00 GMT');
+            
         else if(Auth::check() && (Auth::user()->user_type=='ps' || Auth::user()->user_type=='agency'))
             return redirect('entry_form');
         else if(Auth::check() && Auth::user()->user_type=='special_court')

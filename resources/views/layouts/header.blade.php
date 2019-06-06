@@ -18,7 +18,7 @@
         <header class="main-header">
         
             <!-- Logo -->
-            @if(Auth::check() && Auth::user()->user_type == 'ps')
+            @if(Auth::check() && (Auth::user()->user_type == 'ps' || Auth::user()->user_type == 'agency'))
                 <a href="entry_form" class="logo"> 
             @elseif(Auth::check() && Auth::user()->user_type == 'high_court')
                 <a href="dashboard" class="logo">

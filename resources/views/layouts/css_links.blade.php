@@ -1,5 +1,5 @@
-<!-- Bootstrap 3.3.7 -->
-<link rel="stylesheet" href="{{asset('css/AdminLTE-2.4.5/bower_components/bootstrap/dist/css/bootstrap.min.css')}}">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="{{asset('css/AdminLTE-2.4.5/bower_components/bootstrap/dist/css/bootstrap.min.css')}}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{asset('css/AdminLTE-2.4.5/bower_components/font-awesome/css/font-awesome.min.css')}}">
     <!-- Ionicons -->
@@ -40,3 +40,13 @@
     
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
+    <!--To Disabled The Spinner In The Number Type Input Fileds-->
+    <style>
+      input[type=number]::-webkit-inner-spin-button, 
+      input[type=number]::-webkit-outer-spin-button { 
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          margin: 0; 
+      }
+    </style>

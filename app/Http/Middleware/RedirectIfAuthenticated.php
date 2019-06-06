@@ -17,9 +17,20 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::guard($guard)->check()) {
-            return redirect('/home');
+        if(Auth::guard($guard)->check() && Auth::user()->user_type=='high_court') {
+            return redirect('dashboard');
         }
+        else if(Auth::guard($guard)->check() && (Auth::user()->user_type=='ps' || Auth::user()->user_type=='agency')) {
+            return redirect('entry_form');
+        }
+        else if(Auth::guard($guard)->check() && Auth::user()->user_type=='magistrate') {
+            return redirect('magistrate_entry_form');
+        }
+        else if(Auth::guard($guard)->check() && Auth::user()->user_type=='special_court') {
+            return redirect('dashboard_special_court');
+        }
+
+
 
         return $next($request);
     }

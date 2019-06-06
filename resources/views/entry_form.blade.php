@@ -35,7 +35,7 @@
 											@endforeach
 										</select>
 									</div>
-									<div class="col-sm-3">
+									<div class="col-sm-2">
 										<input class="form-control" type="number" id="case_no" placeholder="Case No." autocomplete="off">
 									</div>
 									<div class="col-sm-3">

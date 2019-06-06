@@ -17,7 +17,10 @@ class Stakeholder
     public function handle($request, Closure $next)
     {
         if(Auth::check() && (Auth::user()->user_type=='ps' || Auth::user()->user_type=='agency'))
-            return $next($request);
+            return $next($request)->header('Cache-Control','no-cache, no-store, max-age=0, must-revalidate')
+            ->header('Pragma','no-cache')
+            ->header('Expires','Sun, 02 Jan 1990 00:00:00 GMT');
+            
         else if(Auth::check() && Auth::user()->user_type=='agency')
             return redirect('dashboard_agency');
         else if(Auth::check() && Auth::user()->user_type=='high_court')
