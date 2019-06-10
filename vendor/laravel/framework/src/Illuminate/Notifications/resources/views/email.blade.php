@@ -43,7 +43,7 @@
 @if (! empty($salutation))
 {{ $salutation }}
 @else
-@lang('Regards'),<br>{{ config('app.name') }}
+@lang('Regards'),<br>Drug Disposal Monitoring Team, Calcutta High Court
 @endif
 
 {{-- Subcopy --}}

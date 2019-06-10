@@ -2,7 +2,7 @@
     {{-- Header --}}
     @slot('header')
         @component('mail::header', ['url' => config('app.url')])
-            {{ config('app.name') }}
+            Drug Disposal Monitoring Team, Calcutta High Court
         @endcomponent
     @endslot
 
