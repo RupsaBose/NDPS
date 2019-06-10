@@ -955,7 +955,7 @@ class MasterMaintenanceController extends Controller
                 'court_name' => 'nullable|integer|unique:users,court_id',
                 'district_name' => 'nullable|integer|unique:users,district_id',
                 'ps_name' => 'nullable|integer|unique:users,ps_id',
-                'email_id' => 'nullable|email|max:100|unique:users,email',
+                'email_id' => 'required|email|max:100|unique:users,email',
                 'contact_no' => 'nullable|integer|unique:users,contact_no'         
             ] ); 
 
