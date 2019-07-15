@@ -232,14 +232,24 @@ class MagistrateController extends Controller
             // Serial Number incrementing for every row
             $report['Sl No'] +=1;
 
-            if($case->ps_id!=null){
+            //If Case Initiated By Any Agency Other Than NCB
+            if($case->ps_id!=null && $case->agency_id!=null){
                 //If submitted date is within 10 days of present date, a new marker will be shown
                 if(((strtotime(date('Y-m-d')) - strtotime($case->created_at)) / (60*60*24) <=10))
-                    $report['Stakeholder Name'] = "<strong>".$case->ps_name."</strong> <small class='label pull-right bg-blue'>new</small>";
+                    $report['Stakeholder Name'] = "<strong>".$case->ps_name."</strong><br>(Case Initiated By: ".$case->agency_name.")<small class='label pull-right bg-blue'>new</small>";
+                else
+                    $report['Stakeholder Name'] = "<strong>".$case->ps_name."</strong><br>(Case Initiated By: ".$case->agency_name.")";
+            }
+            //If Case Initiated By Any PS
+            else if($case->ps_id!=null && $case->agency_id==null){
+                //If submitted date is within 10 days of present date, a new marker will be shown
+                if(((strtotime(date('Y-m-d')) - strtotime($case->created_at)) / (60*60*24) <=10))
+                    $report['Stakeholder Name'] = "<strong>".$case->ps_name."</strong><small class='label pull-right bg-blue'>new</small>";
                 else
                     $report['Stakeholder Name'] = "<strong>".$case->ps_name."</strong>";
             }
-            else{
+            //If Case Initiated By NCB
+            else if($case->ps_id==null){
                 //If submitted date is within 10 days of present date, a new marker will be shown
                 if(((strtotime(date('Y-m-d')) - strtotime($case->created_at)) / (60*60*24) <=10))
                     $report['Stakeholder Name'] = "<strong>".$case->agency_name."</strong> <small class='label pull-right bg-blue'>new</small>";

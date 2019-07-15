@@ -52,7 +52,7 @@
 
 <hr>
          
-         <br> <br>
+<br> <br>
 
 <!--loader starts-->
 
@@ -60,9 +60,14 @@
     <img src='images/loader.gif'width="25%" height="10%" />
       <br>Loading..
 </div>
-   
+<!--loader ends-->
 
-@endsection
+<!--Closing that has been openned in the header.blade.php -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
 
 
 <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
@@ -112,15 +117,15 @@
 
             // Double Click To Enable Content editable
             $(document).on("click",".data", function(){
-                        $(this).attr('contenteditable',true);
+                 $(this).attr('contenteditable',true);
             })
      //Addition of Storage_Details starts
         
             $(document).on("click", "#add_new_storage",function(){
 
                 var storage_name = $("#storage_name").val().toLowerCase().replace(/\b[a-z]/g, function(letter) {
-                return letter.toUpperCase();
-            });
+                    return letter.toUpperCase();
+                });
                                
                 $.ajax({
 
@@ -134,20 +139,15 @@
                 success:function(response)
                 {
                     $("#storage_name").val('');
-                    swal("STORAGE Added Successfully","","success");
+                    swal("Storage Added Successfully","","success");
                     table.api().ajax.reload();
                 },
-                error:function(response) {  
-
-                    console.log(response);
-
-                if(response.responseJSON.errors.hasOwnProperty('storage_name'))
-                                swal("Cannot Add New STORAGE", ""+response.responseJSON.errors.storage_name['0'], "error");
-                                                        
-                                                
-                        }                
-                });
+                error:function(response) { 
+                    if(response.responseJSON.errors.hasOwnProperty('storage_name'))
+                        swal("Cannot Add New STORAGE", ""+response.responseJSON.errors.storage_name['0'], "error");
+                }                
             });
+        });
 
         //Addition in Storage_Details ends
 
@@ -179,12 +179,11 @@
                     swal("Storage Details Updated","","success");
                     table.api().ajax.reload();
                 },
-                error:function(response) {  
-                    console.log(response);
+                error:function(response) { 
                     if(response.responseJSON.errors.hasOwnProperty('storage_name'))
                         swal("Cannot updated Storage", ""+response.responseJSON.errors.storage_name['0'], "error");
                 }
-                })
+            })
         })
 
         // Data Updation Codes Ends 
@@ -251,13 +250,12 @@
                         }
                      })
                     }
-
-                        else 
-                        {
-                            swal("Deletion Cancelled","","error");
-                        }
-                    })
-                });
+                    else 
+                    {
+                        swal("Deletion Cancelled","","error");
+                    }
+                })
+            });
 
                 // Data Deletion Codes Ends 
 
@@ -265,6 +263,5 @@
  });
 </script>
 
-    </body>
 
-    </html>
+@endsection

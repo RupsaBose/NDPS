@@ -64,7 +64,7 @@ class Kernel extends HttpKernel
         'stakeholder' => 'App\Http\Middleware\Stakeholder',
         'high_court' => 'App\Http\Middleware\High_Court',
         'magistrate' => 'App\Http\Middleware\Magistrate',
-        'special_court' => 'App\Http\Middleware\Special_COurt'
+        'special_court' => 'App\Http\Middleware\Special_Court'
     ];
 
     /**

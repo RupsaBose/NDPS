@@ -57,19 +57,21 @@
       <br>Loading..
 </div>
    
-   <!--loader starts-->
+<!--loader ends-->
 
-@endsection
+<!--Closing that has been openned in the header.blade.php -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
 <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
 
 <script>
 
         $(document).ready(function(){
-            
-
-
             /*LOADER*/
-
                 $(document).ajaxStart(function() {
                     $("#wait").css("display", "block");
                 });
@@ -107,6 +109,4 @@
 
 </script>
 
-</body>
-
-</html>
+@endsection

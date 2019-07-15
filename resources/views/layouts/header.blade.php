@@ -4,10 +4,15 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>DDMS</title>
-    <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"> 
+    <meta name="Drug Disposal Monitoring System" content="DDMS is developed by the
+    Software Developers of Calcutta High Court and its purpose is to monitor all
+    the seizures and its disposals.">
+    <meta name="Software Developers" content="Anabil Bhattacharya, Rupsa Bose">
+    <meta name="Guide" content="Shri Kallol Chattopadhyay, Shri Abhranil Neogi">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <title>DDMS</title>    
+    
     @include('layouts.css_links')
 
 </head>
@@ -36,6 +41,7 @@
                 <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                     <span class="sr-only">Toggle navigation</span>
                 </a>
+                
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
                         <li class="dropdown user user-menu">
@@ -112,7 +118,7 @@
                                 <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="district_view"><i class="fa fa-circle-o text-red"></i> <span>District Master Maintenance</span></a></li>
+                                {{-- <li><a href="district_view"><i class="fa fa-circle-o text-red"></i> <span>District Master Maintenance</span></a></li> --}}
                                 <li><a href="court_view"><i class="fa fa-circle-o text-yellow"></i> <span>Court Master Maintenance</span></a></li>
                                 <li><a href="stakeholder_view"><i class="fa fa-circle-o text-violate"></i> <span>Stakeholder Master Maintenance</span></a></li>
                                 <li><a href="narcotic_view"><i class="fa fa-circle-o text-green"></i> <span>Narcotic Master Maintenance</span></a></li>
@@ -129,12 +135,15 @@
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="create_new_user">User Creation</a></li>
-                                <li><a href="#">Remove User</a></li>
+                                {{-- <li><a href="#">Remove User</a></li> --}}
                             </ul>
                         </li>
                     @endif
-                   
 
+                    {{-- <li class="header"></li>
+                    <li>
+                        <a href="faq"><i class="fa fa-book" aria-hidden="true"></i><span><strong>Frequently Asked Question</strong></span></a></li>
+                    </li>                     --}}
                 </ul>
             </section>
             <!-- /.sidebar -->
@@ -146,18 +155,6 @@
             <!-- Main content -->
             <section class="content">
                 @yield('content')
-            </section>
-            <!-- /.content -->
-        </div>
-        <!-- /.content-wrapper -->
-
-         <!-- For Session Timeout For Inactive Window STARTS -->
-        <div style="display:none;">
-            <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                @csrf
-                <input type="submit" id="submit">
-            </form>
-        </div>
-        <!-- For Session Timeout For Inactive Window ENDS -->
+            
         
         @include('layouts.js_links')

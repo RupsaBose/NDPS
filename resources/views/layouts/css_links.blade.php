@@ -22,6 +22,7 @@
 
     <!-- Data Table -->
     <link rel="stylesheet" href="{{asset('css/dataTables.min.css')}}">
+    <link rel="stylesheet" href="{{asset('css/responsive.bootstrap.min.css')}}">
 
     <!-- Select-2 -->
     <link rel="stylesheet" href="{{asset('css/select2.min.css')}}">

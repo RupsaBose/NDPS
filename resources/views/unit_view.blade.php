@@ -73,9 +73,15 @@
       <br>Loading..
 </div>
    
-   <!--loader starts-->
+<!--loader ends-->
 
-@endsection
+<!--Closing that has been openned in the header.blade.php -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
 <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
 
 <script>
@@ -104,17 +110,19 @@
                                     "url": "show_all_units",
                                     "dataType": "json",
                                     "type": "POST",
-                                    "data":{ _token: $('meta[name="csrf-token"]').attr('content')}
+                                    "data":{ 
+                                        _token: $('meta[name="csrf-token"]').attr('content')
+                                    }
                                 },
                             "columns": [                
-                                {  "class": "id",
-                                    "data": "ID" },
+                                {"class": "id",
+                                 "data": "ID" },
                                 {"class": "unit data",
-                                    "data": "UNIT NAME" },
+                                 "data": "UNIT NAME" },
                                 {"class": "unit_degree data",
-                                "data": "UNIT DEGREE" },
+                                 "data": "UNIT DEGREE" },
                                 {"class": "delete",
-                                    "data": "ACTION" }
+                                 "data": "ACTION" }
                             ]
                         }); 
 
@@ -123,24 +131,24 @@
 
             // Double Click To Enable Content editable
             $(document).on("click",".data", function(){
-                        $(this).attr('contenteditable',true);
-                    })
+                $(this).attr('contenteditable',true);
+            })
 
 
             //add unit:start
              $(document).on("click","#add_unit",function (){
 
 
-                var narcotic_unit=$("#narcotic_unit").val().toLowerCase().replace(/\b[a-z>]/g, function(letter)
-                  {
+                var narcotic_unit=$("#narcotic_unit").val().toLowerCase().replace(/\b[a-z>]/g, function(letter){
                     return letter.toUpperCase();
-                  });
-                  var unit_degree=$("#unit_degree option:selected").val();
+                });
+                var unit_degree=$("#unit_degree option:selected").val();
                                             
                  $.ajax({
                         type:"POST",
                         url:"master_maintenance/unit",
-                        data:{_token: $('meta[name="csrf-token"]').attr('content'), 
+                        data:{
+                                _token: $('meta[name="csrf-token"]').attr('content'), 
                                 narcotic_unit:narcotic_unit,
                                 unit_degree:unit_degree
                              },
@@ -151,8 +159,7 @@
                             },
                             error:function(response) {  
                                if(response.responseJSON.errors.hasOwnProperty('narcotic_unit'))
-                                   swal("Cannot Add New Unit", ""+response.responseJSON.errors.narcotic_unit['0'], "error");
-                                                                                          
+                                   swal("Cannot Add New Unit", ""+response.responseJSON.errors.narcotic_unit['0'], "error");                                                                                          
                               }
                     });
                 });
@@ -169,27 +176,27 @@
                 $(document).on("focusout",".data", function(){
                     var id = $(this).closest("tr").find(".id").text();
                     var unit = $(this).closest("tr").find(".unit").text();
-                                
-                if(unit == prev_unit)
+                                    
+                    if(unit == prev_unit)
                         return false;
 
 
-                $.ajax({
-                    type:"POST",
-                    url:"master_maintenance_unit/update",                
-                    data:{_token: $('meta[name="csrf-token"]').attr('content'), 
-                            id:id, 
-                            unit:unit
+                    $.ajax({
+                        type:"POST",
+                        url:"master_maintenance_unit/update",                
+                        data:{_token: $('meta[name="csrf-token"]').attr('content'), 
+                                id:id, 
+                                unit:unit
+                            },
+                        success:function(response){   
+                                    
+                            swal("Narcotic Unit's Details Updated","","success");
+                            table.api().ajax.reload();
                         },
-                    success:function(response){   
-                                
-                        swal("Narcotic Unit's Details Updated","","success");
-                        table.api().ajax.reload();
-                    },
-                    error:function(response) {  
-                        if(response.responseJSON.errors.hasOwnProperty('unit'))
-                            swal("Cannot updated Narcotic Unit", ""+response.responseJSON.errors.unit['0'], "error");
-                    }
+                        error:function(response) {  
+                            if(response.responseJSON.errors.hasOwnProperty('unit'))
+                                swal("Cannot updated Narcotic Unit", ""+response.responseJSON.errors.unit['0'], "error");
+                        }
                     })
                 })
 
@@ -224,8 +231,7 @@
                                             table.api().ajax.reload();                
                                         }
                                     },
-                                    error:function(response){
-                                    
+                                    error:function(response){                                    
                                         swal({
                                             title: "Are You Sure?",
                                             text: "Once deleted,all details of SEIZURE and USERS associated with this UNIT will be deleted ",
@@ -267,6 +273,4 @@
 });
 </script>
 
-    </body>
-
-    </html>
+@endsection

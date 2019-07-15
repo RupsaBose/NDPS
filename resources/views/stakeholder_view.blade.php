@@ -67,16 +67,19 @@
       <br>Loading..
 </div>
    
-   <!--loader starts-->
+<!--loader ends-->
 
-@endsection
+<!--Closing that has been openned in the header.blade.php -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
 <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
 
 <script>
 
         $(document).ready(function(){
-            
-
 
             /*LOADER*/
 
@@ -116,9 +119,8 @@
 
             // Double Click To Enable Content editable
             $(document).on("click",".data", function(){
-                        $(this).attr('contenteditable',true);
-                    })
-
+                $(this).attr('contenteditable',true);
+            })
             /*Stakeholder master maintenance */
 
              $(document).on("click","#add",function (){
@@ -147,8 +149,6 @@
                                     swal("Cannot create new Stakeholder", ""+response.responseJSON.errors.stakeholder_name['0'], "error");
                                     
                               }
-
-
                         });
                 });
 
@@ -181,8 +181,7 @@
                         stakeholder:stakeholder,
                         district:jurisdiction
                     },
-                success:function(response){   
-                               
+                success:function(response){  
                     swal("Stakeholder's Details Updated","","success");
                     table.api().ajax.reload();
                 },
@@ -281,6 +280,4 @@
 
 </script>
 
-    </body>
-
-    </html>
+@endsection

@@ -150,9 +150,11 @@
     <!-- /.box -->
 </div>
     
-    
-    
-@endsection
+<!--Closing that has been openned in the header.blade.php -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
 
 
 <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
@@ -250,6 +252,7 @@
                     });
 
                     table.column( 0 ).visible( false ); // Hiding the district id column
+                    
                 }
                 else if(report_type=="stakeholder_report"){
                     $('#stakeholder_report').DataTable().destroy();
@@ -502,3 +505,6 @@
             
         })
     </script>
+
+    
+@endsection

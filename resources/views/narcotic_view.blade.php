@@ -68,18 +68,21 @@
 
 <hr>
          
-         <br> <br>
+<br> <br>
 
 <!--loader starts-->
-
 <div class="col-md-offset-5 col-md-3" id="wait" style="display:none;">
     <img src='images/loader.gif'width="25%" height="10%" />
       <br>Loading..
-</div>
-   
-   <!--loader starts-->
+</div>   
+<!--loader ends-->
 
-@endsection
+<!--Closing that has been openned in the header.blade.php -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
 <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
 
 <script>
@@ -152,8 +155,7 @@
                                setTimeout(function(){
                                     window.location.reload(true);
                                 },2000);  
-                            }
-                        
+                            }                        
 
                         });
                 });
@@ -192,8 +194,7 @@
                     swal("Narcotic's Details Updated","","success");
                     table.api().ajax.reload();
                 },
-                error:function(response) {  
-                    console.log(response)
+                error:function(response) { 
                       if(response.responseJSON.errors.hasOwnProperty('unit'))
                          swal("Cannot updated Narcotic", ""+response.responseJSON.errors.unit['0'], "error");
                                                          
@@ -285,6 +286,4 @@
 
 </script>
 
-    </body>
-
-    </html>
+@endsection

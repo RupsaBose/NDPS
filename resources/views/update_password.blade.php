@@ -52,12 +52,17 @@
 <!-- /.box-body -->
 
 <div style="display:none;">
-        <form id="logout-form" action="{{ route('logout') }}" method="POST">
-        @csrf
-        <input type="submit" id="submit">
-    </form>
+   <form id="logout-form" action="{{ route('logout') }}" method="POST">
+            @csrf
+      <input type="submit" id="submit">
+   </form>
 </div>
-@endsection
+
+<!--Closing that has been openned in the header.blade.php -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
 
 <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
 <script>
@@ -101,18 +106,17 @@
                         }                     
                     },
 
-                     error:function(response){
-                         console.log(response);
+                     error:function(response){;
                         if(response.responseJSON.errors.hasOwnProperty('new_password'))
                                    swal("Password Can Not be Updated", ""+response.responseJSON.errors.new_password['0'], "error");
                         if(response.responseJSON.errors.hasOwnProperty('current_password'))
                                    swal("Password Can Not be Updated", ""+response.responseJSON.errors.current_password['0'], "error");        
-                        }
+                     }
                 })
         })
 
     });
 
-
-
 </script>
+
+@endsection

@@ -72,8 +72,11 @@
       <br>Loading..
 </div>
    
-
-@endsection
+<!--Closing that has been openned in the header.blade.php -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
 
 
 <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
@@ -191,8 +194,7 @@
                         id:id, 
                         court_name:court_name
                      },
-                success:function(response){   
-                     console.log(response);
+                success:function(response){ 
                     swal("Court's Details Updated","","success");
                     table.api().ajax.reload();
                 },
@@ -285,6 +287,5 @@
 });
 </script>
 
-</body>
 
-</html>
+@endsection

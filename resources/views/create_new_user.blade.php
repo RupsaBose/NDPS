@@ -125,7 +125,13 @@
             
     </div>
     <!-- /.box-body -->
-    @endsection
+    
+<!--Closing that has been openned in the header.blade.php -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
 
     <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
 
@@ -252,6 +258,4 @@
         
     </script>
 
-    </body>
-
-    </html>
+@endsection

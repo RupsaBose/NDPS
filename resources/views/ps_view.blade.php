@@ -62,7 +62,7 @@
 
 <hr>
          
-         <br> <br>
+<br> <br>
 
 <!--loader starts-->
 
@@ -71,8 +71,11 @@
       <br>Loading..
 </div>
    
-
-@endsection
+<!--Closing that has been openned in the header.blade.php -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
 
 
 <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
@@ -80,8 +83,6 @@
 <script>
 
     $(document).ready(function(){
-
-                 
 
         //select2 initialization code
          $(".select2").select2(); 
@@ -125,14 +126,13 @@
 
             // Double Click To Enable Content editable
             $(document).on("click",".data", function(){
-                        $(this).attr('contenteditable',true);
+                $(this).attr('contenteditable',true);
             })
 
 
              //Addition of Ps_Details starts
         
             $(document).on("click", "#add_new_ps",function(){
-
                 var ps_name = $("#ps_name").val().toLowerCase().replace(/\b[a-z]/g, function(letter) {
                 return letter.toUpperCase();
             });
@@ -154,15 +154,10 @@
                     swal("PS Added Successfully","","success");
                     table.api().ajax.reload();
                 },
-                error:function(response) {  
-
-                    console.log(response);
-
-                if(response.responseJSON.errors.hasOwnProperty('ps_name'))
-                                swal("Cannot Add New PS", ""+response.responseJSON.errors.ps_name['0'], "error");
-                                                        
-                                                
-                        }                
+                error:function(response) { 
+                    if(response.responseJSON.errors.hasOwnProperty('ps_name'))
+                        swal("Cannot Add New PS", ""+response.responseJSON.errors.ps_name['0'], "error");
+                    }                
                 });
             });
 
@@ -191,13 +186,11 @@
                         id:id, 
                         ps_name:ps_name
                     },
-                success:function(response){   
-                            
+                success:function(response){ 
                     swal("Police Station's Details Updated","","success");
                     table.api().ajax.reload();
                 },
-                error:function(response) {  
-                    console.log(response);
+                error:function(response) { 
                     if(response.responseJSON.errors.hasOwnProperty('ps_name'))
                         swal("Cannot updated Police Station", ""+response.responseJSON.errors.ps_name['0'], "error");
                 }
@@ -276,12 +269,10 @@
                         }
                 })
 
-    // Data Deletion Codes Ends 
-        });
+        // Data Deletion Codes Ends 
+    });
 
 });
 </script>
 
-    </body>
-
-    </html>
+@endsection

@@ -1,9 +1,11 @@
 <footer class="main-footer">
     <div class="container">                
-       <strong>Copyright &copy; 2019 High Court, Calcutta</a>.</strong> All
-                rights
-                reserved.
+       <strong>Designed & Developed By The Software Developers of 
+                Calcutta High Court.</strong> Copyright © {{Date('Y')}}
     </div>
     <!-- /.container -->
 </footer>
+
+</body>
+</html>
         

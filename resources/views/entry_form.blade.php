@@ -2,193 +2,267 @@
 @section('content')
 <!-- Main content -->
 
-<div class="box box-default">
-        <div class="box-header with-border" >
-            <h3 class="box-title" text-align="center"><strong>Seizure - Certification And Disposal Details of Narcotic Contrabands:</strong></h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
-            </div>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-				<div class="container">	
-					<ul  class="nav nav-pills col-sm-offset-3">
-						<li class="active" style="border-style:outset" id="li_seizure"><a href="#seizure" data-toggle="tab"><strong style="font-size:large">Seizure Details</strong></a></li>
-						<li style="border-style:outset" id="li_certification"><a href="#certification" data-toggle="tab"><strong style="font-size:large">Apply for Certification</strong></a></li>
-						<li style="border-style:outset; pointer-events:none;opacity:0.3;" id="li_disposal"><a href="#disposal" data-toggle="tab"><strong style="font-size:large">Disposal Details</strong></a></li>
-					</ul>
-					
-					<br><hr>
+<!-- Only PS and NCB can input data -->
+@if(Auth::user()->user_type == "ps" || Auth::user()->user_name == "NCB")
+	<div class="box box-default">
+			<div class="box-header with-border" >
+				<h3 class="box-title" text-align="center"><strong>Seizure - Certification And Disposal Details of Narcotic Contrabands:</strong></h3>
+				<div class="box-tools pull-right">
+					<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+					<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+				</div>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+					<div class="container">	
+						<ul  class="nav nav-pills col-sm-offset-3">
+							<li class="active" style="border-style:outset" id="li_seizure"><a href="#seizure" data-toggle="tab"><strong style="font-size:large">Seizure Details</strong></a></li>
+							<li style="border-style:outset" id="li_certification"><a href="#certification" data-toggle="tab"><strong style="font-size:large">Apply for Certification</strong></a></li>
+							<li style="border-style:outset; pointer-events:none;opacity:0.3;" id="li_disposal"><a href="#disposal" data-toggle="tab"><strong style="font-size:large">Disposal Details</strong></a></li>
+						</ul>
+						
+						<br><hr>
 
-					<div class="tab-content clearfix">
-						<!-- Seizure Details Form :: STARTS -->
-						<div class="tab-pane active" id="seizure">
-							<form id="form_seizure">
-								<div class="form-group required row">
-									<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Case No.</label>
-									<div class="col-sm-3">
-										<select class="form-control select2" id="stakeholder" autocomplete="off">
-											<option value="">Select Stakeholder's Name</option>
-											@foreach($data['stakeholders'] as $stakeholder)
-												<option value="{{$stakeholder->stakeholder_id}}">{{$stakeholder->stakeholder_name}}</option>
-											@endforeach
-										</select>
-									</div>
-									<div class="col-sm-2">
-										<input class="form-control" type="number" id="case_no" placeholder="Case No." autocomplete="off">
-									</div>
-									<div class="col-sm-3">
-										<select class="form-control select2" id="case_year" autocomplete="off">	
-											<option value="">Select Year</option>					
-											@for($i=Date('Y');$i>=1980;$i--)
-												<option value="{{$i}}">{{$i}}</option>
-											@endfor
-										</select>
-									</div>
-								</div>
-
-								<hr>
-
-								<div class="div_add_more">
+						<div class="tab-content clearfix">
+							<!-- Seizure Details Form :: STARTS -->
+							<div class="tab-pane active" id="seizure">
+								<form id="form_seizure">
 									<div class="form-group required row">
-										<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Nature of Narcotic</label>
+										<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Case No.</label>
 										<div class="col-sm-3">
-											<select class="form-control narcotic_type" autocomplete="off">
-												<option value="" selected>Select An Option</option>
-												@foreach($data['narcotics'] as $narcotic)
-													<option value="{{$narcotic->drug_id}}">{{$narcotic->drug_name}}</option>
+											<select class="form-control select2" id="stakeholder" autocomplete="off">
+												<option value="">Select Stakeholder's Name</option>
+												@foreach($data['stakeholders'] as $stakeholder)
+													<option value="{{$stakeholder->stakeholder_id}}">{{$stakeholder->stakeholder_name}}</option>
 												@endforeach
-												<option value="999">Other</option>
-											</select>									
+											</select>
 										</div>
-
-										<div class="col-sm-1 div_img_add_more">											
-											<img src="{{asset('images/details_open.png')}}" style="cursor:pointer" class="add_more" alt="add_more" id="add_more">
+										<div class="col-sm-2">
+											<input class="form-control" type="number" id="case_no" placeholder="Case No." autocomplete="off">
 										</div>
-
-										<div class="col-sm-3 div_other_narcotic_type" style="display:none">
-												<input class="form-control other_narcotic_name" type="text" placeholder="Narcotic Name" autocomplete="off">
-												<input class="form-control flag_other_narcotic" type="number" style="display:none" autocomplete="off"> 	
+										<div class="col-sm-3">
+											<select class="form-control select2" id="case_year" autocomplete="off">	
+												<option value="">Select Year</option>					
+												@for($i=Date('Y');$i>=1980;$i--)
+													<option value="{{$i}}">{{$i}}</option>
+												@endfor
+											</select>
 										</div>
-
 									</div>
 
 									<div class="form-group required row">
-										<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Quantity of Seizure</label>
-										<div class="col-sm-3">
-											<input class="form-control seizure_quantity" type="number" autocomplete="off">										
+										<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Case Initiated By</label>
+										<div class="col-sm-2">
+											@if(Auth::user()->user_type=="ps")
+												<select class="form-control select2" id="case_initiated_by" autocomplete="off">
+													<option value="">Select an option</option>												
+													<option value="self">Self</option>
+													<option value="agency">Any Agency</option>
+												</select>
+											@elseif(Auth::user()->user_type=="agency" && Auth::user()->user_name=="NCB")
+												<select class="form-control select2" id="case_initiated_by" autocomplete="off" disabled>	
+													<option value="self">Self</option>
+												</select>
+											@endif
 										</div>
 
-										<label class="col-sm-2 col-sm-offset-1 col-form-label-sm control-label" style="font-size:medium">Weighing Unit</label>
-										<div class="col-sm-2">											
-											<select class="form-control seizure_weighing_unit" autocomplete="off">
-												<option value="" selected>Select An Option</option>											
-											</select>
-										</div>										
+										<div id="div_case_initiated_by" style="display:none">
+											<label class="col-sm-2 col-sm-offset-1 col-form-label-sm control-label" style="font-size:medium">Agency Name</label>
+											<div class="col-sm-2">
+												<select class="form-control select2" id="agency_name" autocomplete="off">
+													<option value="">Select an option</option>
+													@foreach($data['agencies'] as $agency)
+														<option value="{{$agency->agency_id}}">{{$agency->agency_name}}</option>
+													@endforeach
+												</select>
+											</div>
+										</div>
+
 									</div>
+
+									<hr>
+
+									<div class="div_add_more">
+										<div class="form-group required row">
+											<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Nature of Narcotic</label>
+											<div class="col-sm-3">
+												<select class="form-control narcotic_type" autocomplete="off">
+													<option value="" selected>Select An Option</option>
+													@foreach($data['narcotics'] as $narcotic)
+														<option value="{{$narcotic->drug_id}}">{{$narcotic->drug_name}}</option>
+													@endforeach
+													<option value="999">Other</option>
+												</select>									
+											</div>
+
+											<div class="col-sm-1 div_img_add_more">											
+												<img src="{{asset('images/details_open.png')}}" style="cursor:pointer" class="add_more" alt="add_more" id="add_more">
+											</div>
+
+											<div class="col-sm-3 div_other_narcotic_type" style="display:none">
+													<input class="form-control other_narcotic_name" type="text" placeholder="Narcotic Name" autocomplete="off">
+													<input class="form-control flag_other_narcotic" type="number" style="display:none" autocomplete="off"> 	
+											</div>
+
+										</div>
+
+										<div class="form-group required row">
+											<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Quantity of Seizure</label>
+											<div class="col-sm-3">
+												<input class="form-control seizure_quantity" type="number" autocomplete="off">										
+											</div>
+
+											<label class="col-sm-2 col-sm-offset-1 col-form-label-sm control-label" style="font-size:medium">Weighing Unit</label>
+											<div class="col-sm-2">											
+												<select class="form-control seizure_weighing_unit" autocomplete="off">
+													<option value="" selected>Select An Option</option>											
+												</select>
+											</div>										
+										</div>
+
+										<div class="form-group required row">	
+											<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Date of Seizure</label>
+											<div class="col-sm-3">											
+												<input type="text" class="form-control date seizure_date" placeholder="Choose Date" autocomplete="off">
+											</div>
+										</div>
+
+									</div>
+									
 
 									<div class="form-group required row">	
-										<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Date of Seizure</label>
-										<div class="col-sm-3">											
-											<input type="text" class="form-control date seizure_date" placeholder="Choose Date" autocomplete="off">
-										</div>
+											<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Place of Storage</label>
+											<div class="col-sm-3">
+												<select class="form-control select2" id="storage" autocomplete="off">
+													<option value="">Select An Option</option>
+													@foreach($data['storages'] as $storage)
+														<option value="{{$storage->storage_id}}">{{$storage->storage_name}}</option>
+													@endforeach
+													<option value="999">Other</option>
+												</select>
+											</div>
+
+											<div class="col-sm-3 col-sm-offset-1 div_other_storage" style="display:none">
+												<input class="form-control other_storage_name" type="text" placeholder="Storage Name" autocomplete="off">
+												<input class="form-control flag_other_storage" type="number" style="display:none" autocomplete="off"> 	
+											</div>
+																												
 									</div>
 
-								</div>
-								
 
-								<div class="form-group required row">	
-										<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Place of Storage</label>
+									<div class="form-group required row">	
+											<label class="col-sm-2 col-form-label-sm" style="font-size:medium">Case Details / Remark</label>
+											<div class="col-sm-2">											
+												<textarea class="form-control" id="remark" ></textarea>
+											</div>
+									</div>
+
+									<hr>
+
+									<div class="col-sm-3 col-sm-offset-5">
+										<a href="#certification" data-toggle="tab">
+											<button type="button" class="btn btn-success btn-lg btnNext">Next</button>
+										</a>
+									</div>
+
+								</form>
+							</div>
+							<!-- Seizure Details Form :: ENDS -->
+
+							<!-- Certification Details Form :: STARTS -->
+							<div class="tab-pane" id="certification">
+								<form id="form_certification">
+									<div class="form-group required row">
+										<label class="col-sm-2 col-form-label-sm  control-label" style="font-size:medium">District</label>
 										<div class="col-sm-3">
-											<select class="form-control select2" id="storage" autocomplete="off">
+											<select class="form-control select2" id="district">
 												<option value="">Select An Option</option>
-												@foreach($data['storages'] as $storage)
-													<option value="{{$storage->storage_id}}">{{$storage->storage_name}}</option>
+												@foreach($data['districts'] as $district)
+													<option value="{{$district->district_id}}">{{$district->district_name}}</option>
 												@endforeach
-												<option value="999">Other</option>
 											</select>
 										</div>
 
-										<div class="col-sm-3 col-sm-offset-1 div_other_storage" style="display:none">
-											<input class="form-control other_storage_name" type="text" placeholder="Storage Name" autocomplete="off">
-											<input class="form-control flag_other_storage" type="number" style="display:none" autocomplete="off"> 	
+										<label class="col-sm-2 col-sm-offset-1 col-form-label-sm  control-label" style="font-size:medium">NDPS Court</label>
+										<div class="col-sm-3">											
+											<select class="form-control select2" id="court">
+												<option value="">Select An Option</option>
+											</select>
 										</div>
-																											
-								</div>
-
-
-								<div class="form-group required row">	
-										<label class="col-sm-2 col-form-label-sm" style="font-size:medium">Case Details / Remark</label>
-										<div class="col-sm-2">											
-											<textarea class="form-control" id="remark" ></textarea>
-										</div>
-								</div>
-
-								<hr>
-
-								<div class="col-sm-3 col-sm-offset-5">
-									<a href="#certification" data-toggle="tab">
-										<button type="button" class="btn btn-success btn-lg btnNext">Next</button>
-									</a>
-								</div>
-
-							</form>
-						</div>
-						<!-- Seizure Details Form :: ENDS -->
-
-						<!-- Certification Details Form :: STARTS -->
-						<div class="tab-pane" id="certification">
-							<form id="form_certification">
-								<div class="form-group required row">
-									<label class="col-sm-2 col-form-label-sm  control-label" style="font-size:medium">District</label>
-									<div class="col-sm-3">
-										<select class="form-control select2" id="district">
-											<option value="">Select An Option</option>
-											@foreach($data['districts'] as $district)
-												<option value="{{$district->district_id}}">{{$district->district_name}}</option>
-											@endforeach
-										</select>
 									</div>
 
-									<label class="col-sm-2 col-sm-offset-1 col-form-label-sm  control-label" style="font-size:medium">NDPS Court</label>
-									<div class="col-sm-3">											
-										<select class="form-control select2" id="court">
-											<option value="">Select An Option</option>
-										</select>
+									<hr>
+
+									<div class="form-group" id="if_certified">
+										<!-- Content Will Come Dynamically -->
 									</div>
-								</div>
 
-								<hr>
+									<div class="col-sm-4 col-sm-offset-4">
+										<a href="#seizure" data-toggle="tab">
+											<button type="button" class="btn btn-warning btn-lg btnPrevious">Back</button>
+										</a>									
+										<button type="button" class="btn btn-success btn-lg" id="apply">Apply For Certification</button>
+										<a href="#disposal" data-toggle="tab">
+											<button type="button" class="btn btn-primary btn-lg btnNext" id="toDisposal" style="display:none">Next</button>
+										</a>
+									</div>
 
-								<div class="form-group" id="if_certified">
+								</form>
+							</div>
+							<!-- Certification Details Form :: ENDS -->
+
+							<!-- Disposal Details Form :: STARTS -->
+							<div class="tab-pane" id="disposal">
+								<form id="form_disposal">
 									<!-- Content Will Come Dynamically -->
-								</div>
-
-								<div class="col-sm-4 col-sm-offset-4">
-									<a href="#seizure" data-toggle="tab">
-										<button type="button" class="btn btn-warning btn-lg btnPrevious">Back</button>
-									</a>									
-									<button type="button" class="btn btn-success btn-lg" id="apply">Apply For Certification</button>
-									<a href="#disposal" data-toggle="tab">
-										<button type="button" class="btn btn-primary btn-lg btnNext" id="toDisposal" style="display:none">Next</button>
-									</a>
-								</div>
-
-							</form>
-						</div>
-						<!-- Certification Details Form :: ENDS -->
-
-						<!-- Disposal Details Form :: STARTS -->
-						<div class="tab-pane" id="disposal">
-							<form id="form_disposal">
-								<!-- Content Will Come Dynamically -->
-							</form>
+								</form>
+							</div>
 						</div>
 					</div>
-				</div>
-		</div>
-</div>
+			</div>
+	</div>
+@endif
+
+<!-- Stakeholders' Report Submission Status -->
+<div class="row">
+    <div class="box box-primary">
+            <div class="box-header with-border">
+              <form class="form-inline">
+                  <label class="box-title" style="font-size:25px; margin-left:30%">
+                      Report For The Month Of :                  
+                      <input type="text" class="form-control month_of_report" style="width:20%; margin-left:3%" name="month_of_report" id="month_of_report" value="{{date('F',strtotime(date('d-m-Y'))).'-'.date('Y',strtotime(date('d-m-Y')))}}" autocomplete="off">
+                  </label>
+              </form>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered table-responsive display" style="width:100%">
+                <thead>
+                  <tr>
+                    <th style="display:none">STAKEHOLDER ID </th>
+                    <th style="display:none">STAKEHOLDER TYPE </th>
+                    <th style="display:none">CASE NO </th>
+                    <th style="display:none">CASE YEAR </th>
+                    <th></th>
+                    <th>Sl No.</th>
+                    <th>Case No.</th>                                    
+                    <th>Nature of Narcotic</th>
+                    <th>Certification Status</th>
+                    <th>Disposal Status</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+  </div>
+
 
 <!--loader starts-->
 
@@ -197,8 +271,14 @@
       <br>Loading..
 </div>
    
-   <!--loader ends-->
-@endsection
+<!--loader ends-->
+
+
+<!--Closing that has been openned in the header.blade.php -->
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
 
 
 <script src="{{asset('js/jquery/jquery.min.js')}}"></script>
@@ -211,8 +291,18 @@
                 endDate:'0',
                 format: 'dd-mm-yyyy'
          }); // Date picker initialization For All The Form Elements
+
+		 var date=$(".month_of_report").datepicker({
+			format: "MM-yyyy",
+			viewMode: "months", 
+			minViewMode: "months"
+		}); // Date picker initialization For Month of Report
 		
 		$(".select2").select2(); // select2 dropdown initialization
+
+		$('html, body').animate({
+			scrollTop: $(".table").offset().top
+		}, 1000)
 
 		$('.btnNext').click(function(){
 			$('.nav > .active').next('li').find('a').trigger('click');
@@ -235,124 +325,137 @@
     /*LOADER*/
 
 
-		/*If multiple narcotics are seized in a same case :: STARTS*/
-			var count = 0;
-			$(document).on("click","#add_more", function(){
-				count++;
-				$(".div_add_more:first").clone().find('.div_other_narcotic_type').hide().end().insertAfter(".div_add_more:last");
-				$(".add_more:last").attr({src:"images/details_close.png",
-																  class:"remove", 
-																	alt:"remove",
-																	id:""});
-				$(".seizure_quantity:last").val('');
+	/*If multiple narcotics are seized in a same case :: STARTS*/
+		var count = 0;
+		$(document).on("click","#add_more", function(){
+			count++;
+			$(".div_add_more:first").clone().find('.div_other_narcotic_type').hide().end().insertAfter(".div_add_more:last");
+			$(".add_more:last").attr({src:"images/details_close.png",
+																class:"remove", 
+																alt:"remove",
+																id:""});
+			$(".seizure_quantity:last").val('');
+			$(".date").datepicker({
+			endDate:'0',
+			format: 'dd-mm-yyyy'
+		}); // Date picker re-initialization
+			
+		})
+	/*If multiple narcotics are seized in a same case :: ENDS*/
+
+
+	/*When Case Initiated By Any Agency :: STARTS*/
+	$(document).on("change","#case_initiated_by", function(){	
+		var case_initiated_by=$(this).val();
+
+		if(case_initiated_by=="agency")
+			$("#div_case_initiated_by").show();
+		else if(case_initiated_by=="self")
+			$("#div_case_initiated_by").hide();
+	});
+	/*When Case Initiated By Any Agency :: ENDS*/
+
+
+	/*If multiple narcotics are entered after first time submission of seizure details :: STARTS*/			
+		$(document).on("click","#seizure_add_more", function(){
+			$(".div_add_more_seizure:first").clone().find('.div_other_narcotic_type').hide().end().insertAfter(".div_add_more_seizure:last");
+			$(".seizure_add_more:last").attr({src:"images/details_close.png",
+																class:"remove_add_more_seizure", 
+																alt:"remove",
+																id:""});
+			$(".seizure_quantity:last").val('');
+			$(".date").datepicker({
+			endDate:'0',
+			format: 'dd-mm-yyyy'
+		}); // Date picker re-initialization
+			
+		})
+	/*If multiple narcotics are entered after first time submission of seizure details :: ENDS*/
+
+		/*If multiple narcotics are seized in a same case after submission of seizure details once :: STARTS*/
+		$(document).on("click","#add_new_seizure", function(){
+				var obj;
+				var str_narcotic_list = "";
+
+				$.ajax({
+					type:"POST",
+					url:"entry_form/fetch_narcotics",
+					async: false,
+					data:{_token: $('meta[name="csrf-token"]').attr('content')},
+					success:function(response){
+						obj = $.parseJSON(response);							
+						$.each(obj,function(key,value){
+								str_narcotic_list=str_narcotic_list+'<option value="'+value.drug_id+'">'+value.drug_name+'</option>';
+						})							
+					}
+				})
+				
+			
+
+			var str_narcotic_details = 
+					'<div class="div_add_more_seizure">'+
+								'<div class="form-group required row">'+
+									'<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Nature of Narcotic</label>'+
+									'<div class="col-sm-3">'+
+										'<select class="form-control narcotic_type" autocomplete="off">'+
+											'<option value="" selected>Select An Option</option>'+str_narcotic_list+												
+											'<option value="999">Other</option>'+
+										'</select>'+
+									'</div>'+
+
+									'<div class="col-sm-1 div_img_add_more">'+
+										'<img src="{{asset("images/details_open.png")}}" style="cursor:pointer" class="seizure_add_more" alt="seizure_add_more" id="seizure_add_more">'+
+									'</div>'+
+
+									'<div class="col-sm-3 div_other_narcotic_type" style="display:none">'+
+											'<input class="form-control other_narcotic_name" type="text" placeholder="Narcotic Name" autocomplete="off">'+
+											'<input class="form-control flag_other_narcotic" type="number" style="display:none" autocomplete="off">'+
+									'</div>'+
+
+								'</div>'+
+
+								'<div class="form-group required row">'+
+									'<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Quantity of Seizure</label>'+
+									'<div class="col-sm-3">'+
+										'<input class="form-control seizure_quantity" type="number" autocomplete="off">'+
+									'</div>'+
+
+									'<label class="col-sm-2 col-sm-offset-1 col-form-label-sm control-label" style="font-size:medium">Weighing Unit</label>'+
+									'<div class="col-sm-2">'+
+										'<select class="form-control seizure_weighing_unit" autocomplete="off">'+
+											'<option value="" selected>Select An Option</option>'+
+										'</select>'+
+									'</div>'+
+								'</div>'+
+
+								'<div class="form-group required row">'+
+									'<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Date of Seizure</label>'+
+									'<div class="col-sm-3">'+
+										'<input type="text" class="form-control date seizure_date" placeholder="Choose Date" autocomplete="off">'+
+									'</div>'+
+
+									'<div class="col-sm-1 col-sm-offset-1">'+
+										'<button type="button" class="btn btn-success btn-md save">Save</button>'+											
+									'</div>'+
+
+								'</div>'+
+								
+								'<hr>'+
+
+							'</div>';
+
+				$(str_narcotic_details).insertAfter(".div_add_more:last");
+
+				$("#add_new_seizure").hide();
+				$("#cancel").show();
 				$(".date").datepicker({
-                endDate:'0',
-                format: 'dd-mm-yyyy'
-         }); // Date picker re-initialization
-				
-			})
-		/*If multiple narcotics are seized in a same case :: ENDS*/
+			endDate:'0',
+			format: 'dd-mm-yyyy'
+		}); // Date picker re-initialization
+			
 
-		/*If multiple narcotics are entered after first time submission of seizure details :: STARTS*/			
-			$(document).on("click","#seizure_add_more", function(){
-				$(".div_add_more_seizure:first").clone().find('.div_other_narcotic_type').hide().end().insertAfter(".div_add_more_seizure:last");
-				$(".seizure_add_more:last").attr({src:"images/details_close.png",
-																  class:"remove_add_more_seizure", 
-																	alt:"remove",
-																	id:""});
-				$(".seizure_quantity:last").val('');
-				$(".date").datepicker({
-                endDate:'0',
-                format: 'dd-mm-yyyy'
-         }); // Date picker re-initialization
-				
-			})
-		/*If multiple narcotics are entered after first time submission of seizure details :: ENDS*/
-
-			/*If multiple narcotics are seized in a same case after submission of seizure details once :: STARTS*/
-			$(document).on("click","#add_new_seizure", function(){
-					var obj;
-					var str_narcotic_list = "";
-
-					$.ajax({
-						type:"POST",
-						url:"entry_form/fetch_narcotics",
-						async: false,
-						data:{_token: $('meta[name="csrf-token"]').attr('content')},
-						success:function(response){
-							obj = $.parseJSON(response);							
-							$.each(obj,function(key,value){
-									str_narcotic_list=str_narcotic_list+'<option value="'+value.drug_id+'">'+value.drug_name+'</option>';
-							})							
-						}
-					})
-					
-				
-
-				var str_narcotic_details = 
-						'<div class="div_add_more_seizure">'+
-									'<div class="form-group required row">'+
-										'<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Nature of Narcotic</label>'+
-										'<div class="col-sm-3">'+
-											'<select class="form-control narcotic_type" autocomplete="off">'+
-												'<option value="" selected>Select An Option</option>'+str_narcotic_list+												
-												'<option value="999">Other</option>'+
-											'</select>'+
-										'</div>'+
-
-										'<div class="col-sm-1 div_img_add_more">'+
-											'<img src="{{asset("images/details_open.png")}}" style="cursor:pointer" class="seizure_add_more" alt="seizure_add_more" id="seizure_add_more">'+
-										'</div>'+
-
-										'<div class="col-sm-3 div_other_narcotic_type" style="display:none">'+
-												'<input class="form-control other_narcotic_name" type="text" placeholder="Narcotic Name" autocomplete="off">'+
-												'<input class="form-control flag_other_narcotic" type="number" style="display:none" autocomplete="off">'+
-										'</div>'+
-
-									'</div>'+
-
-									'<div class="form-group required row">'+
-										'<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Quantity of Seizure</label>'+
-										'<div class="col-sm-3">'+
-											'<input class="form-control seizure_quantity" type="number" autocomplete="off">'+
-										'</div>'+
-
-										'<label class="col-sm-2 col-sm-offset-1 col-form-label-sm control-label" style="font-size:medium">Weighing Unit</label>'+
-										'<div class="col-sm-2">'+
-											'<select class="form-control seizure_weighing_unit" autocomplete="off">'+
-												'<option value="" selected>Select An Option</option>'+
-											'</select>'+
-										'</div>'+
-									'</div>'+
-
-									'<div class="form-group required row">'+
-										'<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Date of Seizure</label>'+
-										'<div class="col-sm-3">'+
-											'<input type="text" class="form-control date seizure_date" placeholder="Choose Date" autocomplete="off">'+
-										'</div>'+
-
-										'<div class="col-sm-1 col-sm-offset-1">'+
-											'<button type="button" class="btn btn-success btn-md save">Save</button>'+											
-										'</div>'+
-
-									'</div>'+
-									
-									'<hr>'+
-
-								'</div>';
-
-					$(str_narcotic_details).insertAfter(".div_add_more:last");
-
-					$("#add_new_seizure").hide();
-					$("#cancel").show();
-					$(".date").datepicker({
-                endDate:'0',
-                format: 'dd-mm-yyyy'
-         }); // Date picker re-initialization
-				
-
-			})
-		/*If multiple narcotics are seized in a same case after submission of seizure details once :: ENDS*/
+		})
+	/*If multiple narcotics are seized in a same case after submission of seizure details once :: ENDS*/
 
 
 		/*Cancel the attempt to insert new seizure details after the submission of seizure details once :: STARTS */
@@ -437,37 +540,37 @@
 							.then((willDelete) => {
 									if (willDelete) {
 										$.ajax({
-													type: "POST",
-													url:"entry_form/add_new_seizure_details", 
-													data: {
-														_token: $('meta[name="csrf-token"]').attr('content'),
-														stakeholder:stakeholder,
-														case_no:case_no,
-														case_year:case_year,
-														narcotic_type:narcotic_type,
-														seizure_date:seizure_date,
-														seizure_quantity:seizure_quantity,
-														seizure_weighing_unit:seizure_weighing_unit,
-														other_narcotic_name:other_narcotic_name,
-														flag_other_narcotic:flag_other_narcotic,
-														storage:storage,
-														remark:remark,
-														district:district,
-														court:court
-													},
-													success:function(response){
-														swal("New Seizure Details Submitted Successfully","","success");
-														element_narcotic_type.attr('readonly',true);
-														element_seizure_quantity.attr('readonly',true);
-														element_seizure_weighing_unit.attr('disabled',true);
-														element_seizure_date.attr('readonly',true);
-														element_other_narcotic_name.attr('readonly',true);
-														element.hide();
-														$("#cancel").hide();
-													},
-													error:function(response){
-														console.log(response);
-													}
+											type: "POST",
+											url:"entry_form/add_new_seizure_details", 
+											data: {
+												_token: $('meta[name="csrf-token"]').attr('content'),
+												stakeholder:stakeholder,
+												case_no:case_no,
+												case_year:case_year,
+												narcotic_type:narcotic_type,
+												seizure_date:seizure_date,
+												seizure_quantity:seizure_quantity,
+												seizure_weighing_unit:seizure_weighing_unit,
+												other_narcotic_name:other_narcotic_name,
+												flag_other_narcotic:flag_other_narcotic,
+												storage:storage,
+												remark:remark,
+												district:district,
+												court:court
+											},
+											success:function(response){
+												swal("New Seizure Details Submitted Successfully","","success");
+												element_narcotic_type.attr('readonly',true);
+												element_seizure_quantity.attr('readonly',true);
+												element_seizure_weighing_unit.attr('disabled',true);
+												element_seizure_date.attr('readonly',true);
+												element_other_narcotic_name.attr('readonly',true);
+												element.hide();
+												$("#cancel").hide();
+											},
+											error:function(response){
+												console.log(response);
+											}
 										})
 									}
 						});
@@ -490,14 +593,21 @@
 				var case_no = $("#case_no").val();
 				var case_year = $("#case_year").val();
 
+				var case_initiated_by = $("#case_initiated_by option:selected").val();
+
+				if(case_initiated_by=="self")
+					var agency_name = null;
+				else if(case_initiated_by=="agency")
+					var agency_name = $("#agency_name option:selected").val();
+
 				narcotic_type = [];
 				$(".narcotic_type").each(function(){
-						narcotic_type.push($(this).val());
+					narcotic_type.push($(this).val());
 				})
 				
 				seizure_quantity = [];
 				$(".seizure_quantity").each(function(){
-						seizure_quantity.push($(this).val());
+					seizure_quantity.push($(this).val());
 				})
 
 				seizure_weighing_unit = [];
@@ -542,6 +652,14 @@
 					swal("Invalid Input","Please Select Case Year.","error");
 					return false;
 				}
+				else if(case_initiated_by==""){
+					swal("Invalid Input","Please Insert Who Has Initiated The Case","error");
+					return false;
+				}
+				else if(case_initiated_by=="agency" && agency_name==""){
+					swal("Invalid Input","Please Select The Agency Who Has Initiated The Case","error");
+					return false;
+				}
 				else if(storage==""){
 					swal("Invalid Input","Please Select Place of Storage of Seizure","error");
 					return false;
@@ -555,48 +673,50 @@
 					return false;
 				}
 				else{
-							swal({
-							title: "Are you sure?",
-							text: "Once You Applied For Certification, Seizure Details Can Not Be Modified Anymore",
-							icon: "warning",
-							buttons: true,
-							dangerMode: true,
-							})
-							.then((willDelete) => {
-									if (willDelete) {
-										$.ajax({
-													type: "POST",
-													url:"entry_form", 
-													data: {
-														_token: $('meta[name="csrf-token"]').attr('content'),
-														stakeholder:stakeholder,
-														case_no:case_no,
-														case_year:case_year,
-														narcotic_type:narcotic_type,
-														seizure_date:seizure_date,
-														seizure_quantity:seizure_quantity,
-														seizure_weighing_unit:seizure_weighing_unit,
-														storage:storage,
-														remark:remark,
-														district:district,
-														court:court,
-														flag_other_narcotic:flag_other_narcotic,
-														other_narcotic_name:other_narcotic_name,
-														flag_other_storage:flag_other_storage,
-														other_storage_name:other_storage_name
-													},
-													success:function(response){
-														swal("Application For Certification Successfully Submitted","","success");
-														setTimeout(function(){
-																window.location.reload(true);
-														},2000);
-													},
-													error:function(response){
-														swal("Invalid Input","","error");														
-													}
-										})
+					swal({
+					title: "Are you sure?",
+					text: "Once You Applied For Certification, Seizure Details Can Not Be Modified Anymore",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true,
+					})
+					.then((willDelete) => {
+							if (willDelete) {
+								$.ajax({
+									type: "POST",
+									url:"entry_form", 
+									data: {
+										_token: $('meta[name="csrf-token"]').attr('content'),
+										stakeholder:stakeholder,
+										case_no:case_no,
+										case_year:case_year,
+										case_initiated_by:case_initiated_by,
+										agency_name:agency_name,
+										narcotic_type:narcotic_type,
+										seizure_date:seizure_date,
+										seizure_quantity:seizure_quantity,
+										seizure_weighing_unit:seizure_weighing_unit,
+										storage:storage,
+										remark:remark,
+										district:district,
+										court:court,
+										flag_other_narcotic:flag_other_narcotic,
+										other_narcotic_name:other_narcotic_name,
+										flag_other_storage:flag_other_storage,
+										other_storage_name:other_storage_name
+									},
+									success:function(response){
+										swal("Application For Certification Successfully Submitted","","success");
+										setTimeout(function(){
+												window.location.reload(true);
+										},2000);
+									},
+									error:function(response){
+										swal("Invalid Input","","error");														
 									}
-							});
+								})
+							}
+					});
 				}
 				
 		})
@@ -610,18 +730,18 @@
 		$("#court").children('option:not(:first)').remove();
 		
 				$.ajax({
-								type: "POST",
-								url:"entry_form/fetch_court",
-								data: {
-									_token: $('meta[name="csrf-token"]').attr('content'),
-									district: district
-								},
-								success:function(resonse){                        
-									var obj=$.parseJSON(resonse)
-									$.each(obj['district_wise_court'],function(index,value){							
-										$("#court").append('<option value="'+value.court_id+'">'+value.court_name+'</option>');
-									})
-								}
+					type: "POST",
+					url:"entry_form/fetch_court",
+					data: {
+						_token: $('meta[name="csrf-token"]').attr('content'),
+						district: district
+					},
+					success:function(resonse){                        
+						var obj=$.parseJSON(resonse)
+						$.each(obj['district_wise_court'],function(index,value){							
+							$("#court").append('<option value="'+value.court_id+'">'+value.court_name+'</option>');
+						})
+					}
 				});
 
 		});
@@ -650,19 +770,19 @@
 			element.children('option:not(:first)').remove();
 
 					$.ajax({
-									type: "POST",
-									url:"entry_form/narcotic_units",
-									data: {
-										_token: $('meta[name="csrf-token"]').attr('content'),
-										narcotic: narcotic,
-										flag_other_narcotic
-									},
-									success:function(resonse){                        
-										var obj=$.parseJSON(resonse)
-										$.each(obj['units'],function(index,value){							
-											element.append('<option value="'+value.unit_id+'">'+value.unit_name+'</option>');											
-										})
-									}
+						type: "POST",
+						url:"entry_form/narcotic_units",
+						data: {
+							_token: $('meta[name="csrf-token"]').attr('content'),
+							narcotic: narcotic,
+							flag_other_narcotic
+						},
+						success:function(resonse){                        
+							var obj=$.parseJSON(resonse)
+							$.each(obj['units'],function(index,value){							
+								element.append('<option value="'+value.unit_id+'">'+value.unit_name+'</option>');											
+							})
+						}
 					});
 
 			});
@@ -700,19 +820,19 @@
 				element.children('option:not(:first)').remove();
 
 						$.ajax({
-										type: "POST",
-										url:"entry_form/narcotic_units",
-										data: {
-											_token: $('meta[name="csrf-token"]').attr('content'),
-											narcotic: narcotic,
-											display:display
-										},
-										success:function(resonse){                        
-											var obj=$.parseJSON(resonse)
-											$.each(obj['units'],function(index,value){							
-												element.append('<option value="'+value.unit_id+'">'+value.unit_name+'</option>');
-											})
-										}
+							type: "POST",
+							url:"entry_form/narcotic_units",
+							data: {
+								_token: $('meta[name="csrf-token"]').attr('content'),
+								narcotic: narcotic,
+								display:display
+							},
+							success:function(resonse){                        
+								var obj=$.parseJSON(resonse)
+								$.each(obj['units'],function(index,value){							
+									element.append('<option value="'+value.unit_id+'" data-unit_degree="'+value.unit_degree+'">'+value.unit_name+'</option>');
+								})
+							}
 						});
 
 		});
@@ -758,7 +878,7 @@
 
 															'<label class="col-sm-2 col-sm-offset-1 col-form-label-sm control-label" style="font-size:medium">Quantity of Seizure</label>'+
 															'<div class="col-sm-3">'+
-																	'<input class="form-control" type="text" value="'+value.quantity_of_drug+' '+value.seizure_unit+'" disabled>'+										
+																	'<input class="form-control" type="text" data-seizure_unit_degree="'+value.seizure_unit_degree+'" value="'+value.quantity_of_drug+' '+value.seizure_unit+'" disabled>'+										
 															'</div>'+
 													'</div>'+
 													
@@ -961,21 +1081,21 @@
 						$("#district").children('option:not(:first)').remove();
 						
 								$.ajax({
-												type: "POST",
-												url:"entry_form/fetch_district",
-												data: {
-													_token: $('meta[name="csrf-token"]').attr('content'),
-													stakeholder:stakeholder
-												},
-												success:function(resonse){                        
-													var obj=$.parseJSON(resonse)
-													
-													$.each(obj['stakeholder_wise_district'],function(index,value){							
-														$("#district").append('<option value="'+value.district_id+'">'+value.district_name+'</option>');														
-													})
+									type: "POST",
+									url:"entry_form/fetch_district",
+									data: {
+										_token: $('meta[name="csrf-token"]').attr('content'),
+										stakeholder:stakeholder
+									},
+									success:function(resonse){                        
+										var obj=$.parseJSON(resonse)
+										
+										$.each(obj['stakeholder_wise_district'],function(index,value){							
+											$("#district").append('<option value="'+value.district_id+'">'+value.district_name+'</option>');														
+										})
 
-													$("#district").trigger("change");
-												}
+										$("#district").trigger("change");
+									}
 								});
 				})
 
@@ -1002,6 +1122,8 @@
 					var element_disposal_weighing_unit = $(this).parent().parent().prev().find(".disposal_weighing_unit");
 					var disposal_weighing_unit = element_disposal_weighing_unit.val();
 
+					var disposal_weighing_degree = element_disposal_weighing_unit.data('unit_degree');
+
 					var element_disposal_date = $(this).parent().parent().find(".disposal_date");
 					var disposal_date = element_disposal_date.val();
 					// If div structure changes, following code will not work :: ENDS
@@ -1021,7 +1143,7 @@
 					else if(disposal_date==""){
 						swal("Invalid Input","Please Insert Date of Disposal","error");
 						return false;
-					}
+					}					
 					else{
 						swal({
 							title: "Are you sure?",
@@ -1031,41 +1153,214 @@
 							dangerMode: true,
 							})
 							.then((willDelete) => {
-									if (willDelete) {
-										$.ajax({
-													type: "POST",
-													url:"entry_form/dispose", 
-													data: {
-														_token: $('meta[name="csrf-token"]').attr('content'),
-														stakeholder:stakeholder,
-														case_no:case_no,
-														case_year:case_year,
-														narcotic_type:narcotic_type,
-														disposal_date:disposal_date,
-														disposal_quantity:disposal_quantity,
-														disposal_weighing_unit:disposal_weighing_unit
-													},
-													success:function(response){
-														swal("Disposal Record Submitted Successfully","","success");
-														element_disposal_quantity.attr('readonly',true);
-														element_disposal_weighing_unit.attr('disabled',true);
-														element_disposal_date.attr('readonly',true);
-														element.hide();
-													},
-													error:function(response){
-														console.log(response);
-													}
-										})
-									}
+								if (willDelete) {
+									$.ajax({
+										type: "POST",
+										url:"entry_form/dispose", 
+										data: {
+											_token: $('meta[name="csrf-token"]').attr('content'),
+											stakeholder:stakeholder,
+											case_no:case_no,
+											case_year:case_year,
+											narcotic_type:narcotic_type,
+											disposal_date:disposal_date,
+											disposal_quantity:disposal_quantity,
+											disposal_weighing_unit:disposal_weighing_unit
+										},
+										success:function(response){
+											swal("Disposal Record Submitted Successfully","","success");
+											element_disposal_quantity.attr('readonly',true);
+											element_disposal_weighing_unit.attr('disabled',true);
+											element_disposal_date.attr('readonly',true);
+											element.hide();
+										},
+										error:function(response){
+											console.log(response);
+										}
+									})
+								}
 						});
 					}
 			})
 			/* Dispose :: ENDS*/
 
 
+		var table;
+		// This function will take month as an input and fetch corresponding report
+		function get_monthly_report(month){
+
+				$('.table').DataTable().destroy();
+
+				table = $(".table").DataTable({ 
+							"processing": true,
+							"serverSide": true,
+							"searching": false,
+							"paging" : false,
+							"ajax": {
+							"url": "entry_form/monthly_report_status",
+							"type": "POST",
+							"data": {
+								_token: $('meta[name="csrf-token"]').attr('content'),
+								month:month
+							}
+						},
+						"columns": [  
+						{"class":"stakeholder_id",
+							"data":"Stakeholder ID"},
+						{"class":"stakeholder_type",
+							"data":"Stakeholder Type"},
+						{"class":"case_no",
+							"data":"Case No"},
+						{"class":"case_year",
+							"data":"Case Year"},
+						{"data":"More Details"}, 
+						{"data": "Sl No"},
+						{"data": "Case_No"},
+						{"data": "Narcotic Type"},
+						{"data": "Certification Status"},
+						{"data": "Disposal Status"}
+					]
+				});
+
+				table.column( 0 ).visible( false ); // Hiding the Stakeholder ID column
+				table.column( 1 ).visible( false ); // Hiding the Stakeholder Type column
+				table.column( 2 ).visible( false ); // Hiding the Case No. column
+				table.column( 3 ).visible( false ); // Hiding the Case Year column
+				
+		}
+
+		var month_of_report = $(".month_of_report").val();    
+		get_monthly_report(month_of_report); // on document ready, fetching the last month's report
+	
+		// Fetching report status according to the user selected month
+		date.on('hide',function(e){
+				month_of_report = $(".month_of_report").val();
+				get_monthly_report(month_of_report);
+		});
+
+
+		// Fetching More Details About a Case
+		$(document).on("click",".more_details",function(){  
+			var element = $(this);        
+			var tr = element.closest('tr');
+			var row = table.row(tr);
+			var row_data = table.row(tr).data();
+
+			var stakeholder_id = row_data['Stakeholder ID'];  
+			var stakeholder_type = row_data['Stakeholder Type']; 
+			var case_no = row_data['Case No'];
+			var case_year = row_data['Case Year'];
+			
+			var obj;
+
+		// fetch case details only when the child row is hide
+			if(!row.child.isShown()){ 
+
+					$.ajax({
+						type:"POST",
+						url:"entry_form/fetch_more_details",
+						data:{
+							_token: $('meta[name="csrf-token"]').attr('content'),
+							stakeholder_id:stakeholder_id,
+							stakeholder_type:stakeholder_type,
+							case_no:case_no,
+							case_year:case_year
+						},
+						success:function(response){
+							obj = $.parseJSON(response);              
+						},
+						error:function(response){
+							console.log(response);
+						},
+						async: false
+					}) 
+			}
+
+			if(row.child.isShown() ) {
+				element.attr("src","images/details_open.png");
+				row.child.hide();
+			}
+			else {
+				element.attr("src","images/details_close.png");
+
+				var child_string ="";            
+				child_string += '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+                                
+									'<tr>'+
+										'<td><strong>Storage Location:</strong></td>'+
+										'<td>'+obj['0'].storage_name+'</td>'+
+									'</tr>'+
+									'<tr>'+
+										'<td><strong>Case Details / Remarks:</strong></td>'+
+										'<td>'+obj['0'].remarks+'</td>'+
+									'</tr>'+
+								'</table>'+
+
+								'<br>'+
+				
+								'<table class="table table-bordered table-responsive">'+
+									'<thead>'+
+										'<tr>'+
+											'<th>Narcotic Type</th>'+
+											'<th>Seizure Quantity</th>'+ 
+											'<th>Date of Seizure</th>'+                                       
+											'<th>Certification Status</th>'+
+											'<th>Date of Certification</th>'+
+											'<th>Sample Quantity</th>'+
+											'<th>Magistrate Remarks</th>'+
+											'<th>Disposal Status</th>'+
+											'<th>Date of Disposal</th>'+
+											'<th>Disposal Quantity</th>'+
+										'</tr>'+
+									'</thead>'+
+									
+									'<tbody>';
+
+				$.each(obj,function(key,value){
+					child_string += ""+
+								'<tr>'+ 
+									'<td>'+
+										value.drug_name+
+									'</td>'+                               
+									'<td>'+
+										value.quantity_of_drug+' '+value.seizure_unit+
+									'</td>'+
+									'<td>'+
+										value.date_of_seizure+
+									'</td>'+ 
+									'<td>'+
+										value.certification_flag+
+									'</td>'+
+									'<td>'+
+										value.date_of_certification+
+									'</td>'+                                
+									'<td>'+
+										value.quantity_of_sample+' '+value.sample_unit+
+									'</td>'+
+									'<td>'+
+										value.magistrate_remarks+
+									'</td>'+
+									'<td>'+
+										value.disposal_flag+
+									'</td>'+
+									'<td>'+
+										value.date_of_disposal+
+									'</td>'+
+									'<td>'+
+										value.disposal_quantity+' '+value.disposal_unit+
+									'</td>'+
+								'</tr>';
+				})
+
+				child_string +='</tbody></table>';
+
+				row.child(child_string).show();
+			}
+
+		})
+
 	});
 
 	
 </script>
-</body>
-</html>
+
+@endsection

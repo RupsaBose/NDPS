@@ -16,17 +16,14 @@ use App\User;
 */
 
     Route::get('/', function () {
-        
-       
-
-        // $id=2;
-        // $admin = User::find($id);
-        // $admin->notify(new Slack);
-
-        return view('welcome');
-    })->middleware('guest');;
+        return redirect()->route('login');
+    });
 
     Auth::routes();
+
+    Route::get('faq', function(){
+        return view('faq');
+    })->middleware('auth');
         
 
     Route::group(['middleware' => ['auth','high_court']], function () {
@@ -246,6 +243,10 @@ use App\User;
         Route::resource('entry_form','entry_formController');
 
         Route::post('entry_form/narcotic_units','entry_formController@narcotic_units');
+
+        Route::post('entry_form/monthly_report_status','entry_formController@monthly_report_status');
+
+        Route::post('entry_form/fetch_more_details','entry_formController@fetch_more_details');
 
         Route::post('entry_form/fetch_narcotics','entry_formController@fetch_narcotics');
 
