@@ -99,8 +99,8 @@
                                 @if(Auth::check() && Auth::user()->user_type == 'high_court')
                                     <li><a href="composite_search_highcourt">Composite Search</a></li>
                                     <li><a href="disposed_undisposed_tally">Disposed Undisposed Tally</a></li>
-                                @elseif(Auth::check() && Auth::user()->user_type == 'ps')
-                                    <li><a href="composite_search_ps">Composite Search</a></li>
+                                @elseif(Auth::check() && (Auth::user()->user_type == 'ps' || Auth::user()->user_type == 'agency'))
+                                    <li><a href="composite_search_stakeholder">Composite Search</a></li>
                                 @elseif(Auth::check() && Auth::user()->user_type == 'magistrate')
                                     <li><a href="composite_search_magistrate">Composite Search</a></li>
                                 @elseif(Auth::check() && Auth::user()->user_type == 'special_court')
@@ -148,6 +148,15 @@
             </section>
             <!-- /.sidebar -->
         </aside>
+
+        <!-- this will be used to logout after being inactive for 5 minutes -->
+        <div style="display:none;">
+            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                @csrf
+                <input type="submit" id="submit">
+            </form>
+        </div>
+             
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">

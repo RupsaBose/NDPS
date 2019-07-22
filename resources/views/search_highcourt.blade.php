@@ -11,7 +11,7 @@
     <!-- /.box-header -->
     <div class="box-body">
         <div class="form-group row">
-            <label class="col-sm-1 col-form-label-sm control-label" style="font-size:medium">Case No.</label>
+            <label class="col-sm-1 col-form-label-sm control-label" style="font-size:medium">Case</label>
             <div class="col-sm-3">
                 <select class="form-control select2" id="ps" autocomplete="off">
                     <option value="">Select PS</option>
@@ -47,7 +47,7 @@
                 </select>
             </div>
 
-            <label class="col-sm-1 col-form-label-sm control-label" style="font-size:medium">NDPS Court</label>
+            <label class="col-sm-1 col-form-label-sm control-label" style="font-size:medium">Designated Magistrate</label>
             <div class="col-sm-3">
                 <select class="form-control select2" id="court" autocomplete="off">
                     <option value="">Select an option...</option>
@@ -117,14 +117,14 @@
             </div>
 
             <div class="form-check form-check-inline">
-                <input class="form-check-input" id="certified" type="checkbox" value="certified" checked>
+                <input class="form-check-input" id="certified" type="checkbox" value="certified">
                 <label class="form-check-label" style="font-size:medium">
-                    Certified Cases
+                    Certified Seizure
                 </label>
     
-                <input class="form-check-input" id="disposed" type="checkbox" value="disposed" checked>
+                <input class="form-check-input" id="disposed" type="checkbox" value="disposed">
                 <label class="form-check-label" style="font-size:medium">
-                    Disposed Cases
+                    Disposed Seizure
                 </label>
             </div>
         
@@ -166,7 +166,7 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            <table class="table table-bordered table-responsive display" style="white-space:nowrap;">
+                <table class="table table-bordered table-responsive display" style="width:100%;">
                 <thead>
                     <tr>
                         <th style="display:none">STAKEHOLDER ID </th>
@@ -176,7 +176,8 @@
                         <th></th>
                         <th>Sl No. </th>
                         <th>Stakeholder Name</th>
-                        <th>Case No.</th>                                    
+                        <th>Case No.</th>    
+                        <th>Designated Magistrate</th>                                
                         <th>Nature of Narcotic</th>
                         <th>Certification Status</th>
                         <th>Disposal Status</th>
@@ -296,6 +297,10 @@
             });
             /*LOADER*/
 
+            $(document).on("click","#reset",function(){
+                location.reload(true);
+            })
+            
             
             // Searching Code :: STARTS
             var table;
@@ -315,12 +320,17 @@
                 $('.table').DataTable().destroy();
                 $("#search_result").show();
 
+                $('html, body').animate({
+                    scrollTop: $("#search_result").offset().top
+                }, 1000)
+
+
                 table = $(".table").DataTable({ 
                     "processing": true,
                     "serverSide": true,
                     "searching": false,
                     "paging" : true,
-                    "scrollX": true,
+                    "ordering" : false,
                     "ajax": {
                       "url": "composite_search_highcourt/search",
                       "type": "POST",
@@ -356,7 +366,9 @@
                       {"data":"More Details"}, 
                       {"data": "Sl No"},         
                       {"data": "Stakeholder Name"},
-                      {"data": "Case_No"},
+                      {"data": "Case_No",
+						"width":"20%"},
+                      {"data": "Magistrate"},
                       {"data": "Narcotic Type"},
                       {"data": "Certification Status"},
                       {"data": "Disposal Status"}
@@ -432,23 +444,24 @@
 
                                     '<br>'+
                     
-                                    '<table class="table table-bordered table-responsive">'+
-                                        '<thead>'+
-                                            '<tr>'+
-                                                '<th>Narcotic Type</th>'+
-                                                '<th>Seizure Quantity</th>'+  
-                                                '<th>Date of Seizure</th>'+                                       
-                                                '<th>Certification Status</th>'+
-                                                '<th>Date of Certification</th>'+
-                                                '<th>Sample Quantity</th>'+
-                                                '<th>Magistrate Remarks</th>'+
-                                                '<th>Disposal Status</th>'+
-                                                '<th>Date of Disposal</th>'+
-                                                '<th>Disposal Quantity</th>'+
-                                            '</tr>'+
-                                        '</thead>'+
-                                        
-                                        '<tbody>';
+                                    '<div style="width:85%; overflow-x:scroll">'+
+                                        '<table class="table table-bordered table-responsive" style="white-space:nowrap;">'+
+                                                '<thead>'+
+                                                    '<tr>'+
+                                                        '<th>Narcotic Type</th>'+
+                                                        '<th>Seizure Quantity</th>'+  
+                                                        '<th>Date of Seizure</th>'+                                       
+                                                        '<th>Certification Status</th>'+
+                                                        '<th>Date of Certification</th>'+
+                                                        '<th>Sample Quantity</th>'+
+                                                        '<th>Magistrate Remarks</th>'+
+                                                        '<th>Disposal Status</th>'+
+                                                        '<th>Date of Disposal</th>'+
+                                                        '<th>Disposal Quantity</th>'+
+                                                    '</tr>'+
+                                                '</thead>'+
+                                                
+                                                '<tbody>';
 
                     $.each(obj,function(key,value){
                         child_string += ""+
@@ -486,7 +499,7 @@
                             '</tr>';
                     })
 
-                    child_string +='</tbody></table>';
+                    child_string +='</tbody></table></div>';
 
                     row.child(child_string).show();
                 }

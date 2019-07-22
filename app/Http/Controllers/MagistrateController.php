@@ -30,10 +30,13 @@ class MagistrateController extends Controller
 
         $data = array();
         
-        $data['ps'] = Ps_detail::select('ps_id','ps_name')
+        $data['ps'] = Ps_detail::join('court_details','ps_details.district_id','court_details.district_id')
+                                ->where('court_details.court_id',Auth::user()->court_id)
+                                ->select('ps_id','ps_name')
                                 ->orderBy('ps_name')
                                 ->get();
         $data['agencies'] = Agency_detail::select('agency_id','agency_name')
+                                            ->where('agency_name','ilike','%NCB%')
                                             ->orderBy('agency_name')
                                             ->get();
         
@@ -51,14 +54,15 @@ class MagistrateController extends Controller
 
         if($stakeholder_type == 'ps'){
             $data['case_details'] = Seizure::join('ps_details','seizures.ps_id','=','ps_details.ps_id')
+                            ->leftjoin('agency_details','seizures.agency_id','=','agency_details.agency_id')
                             ->join('narcotics','seizures.drug_id','=','narcotics.drug_id')
                             ->join('units AS u1','seizures.seizure_quantity_weighing_unit_id','=','u1.unit_id')
                             ->leftjoin('units AS u2','seizures.sample_quantity_weighing_unit_id','=','u2.unit_id')                        
                             ->join('storage_details','seizures.storage_location_id','=','storage_details.storage_id')
                             ->join('court_details','seizures.certification_court_id','=','court_details.court_id')
                             ->join('districts','seizures.district_id','=','districts.district_id')
-                            ->where([['seizures.ps_id',$stakeholder],['seizures.case_no',$case_no],['seizures.case_year',$case_year]])                        
-                            ->select('drug_name','narcotics.display','narcotics.drug_id','quantity_of_drug','seizure_quantity_weighing_unit_id',
+                            ->where([['seizures.ps_id',$stakeholder],['seizures.case_no',$case_no],['seizures.case_year',$case_year],['seizures.certification_court_id',Auth::user()->court_id]])                        
+                            ->select('seizures.ps_id','agency_name','drug_name','narcotics.display','narcotics.drug_id','quantity_of_drug','seizure_quantity_weighing_unit_id',
                                     'u1.unit_name AS seizure_unit','date_of_seizure','storage_name',
                                     'court_name','districts.district_id','district_name','date_of_certification',
                                     'certification_flag','quantity_of_sample','u2.unit_name AS sample_unit',
@@ -67,6 +71,7 @@ class MagistrateController extends Controller
         }
         else if($stakeholder_type='agency'){
             $data['case_details'] = Seizure::join('agency_details','seizures.agency_id','=','agency_details.agency_id')
+                            ->leftjoin('ps_details','seizures.ps_id','=','ps_details.ps_id')
                             ->join('narcotics','seizures.drug_id','=','narcotics.drug_id')
                             ->join('units AS u1','seizures.seizure_quantity_weighing_unit_id','=','u1.unit_id')
                             ->leftjoin('units AS u2','seizures.sample_quantity_weighing_unit_id','=','u2.unit_id')                        
@@ -74,7 +79,7 @@ class MagistrateController extends Controller
                             ->join('court_details','seizures.certification_court_id','=','court_details.court_id')
                             ->join('districts','seizures.district_id','=','districts.district_id')
                             ->where([['seizures.agency_id',$stakeholder],['seizures.case_no',$case_no],['seizures.case_year',$case_year]])                        
-                            ->select('drug_name','narcotics.display','narcotics.drug_id','quantity_of_drug','seizure_quantity_weighing_unit_id',
+                            ->select('seizures.ps_id','agency_name','drug_name','narcotics.display','narcotics.drug_id','quantity_of_drug','seizure_quantity_weighing_unit_id',
                                     'u1.unit_name AS seizure_unit','date_of_seizure','storage_name',
                                     'court_name','districts.district_id','district_name','date_of_certification',
                                     'certification_flag','quantity_of_sample','u2.unit_name AS sample_unit',
@@ -202,6 +207,7 @@ class MagistrateController extends Controller
                             ['certification_court_id',$court_id]
                         ])
                         ->select('seizures.ps_id','seizures.agency_id','case_no','case_year','seizures.created_at','ps_name','agency_name')
+                        ->orderBy('seizures.created_at','DESC')
                         ->distinct()
                         ->get();
         

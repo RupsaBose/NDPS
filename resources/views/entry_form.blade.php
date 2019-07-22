@@ -6,7 +6,7 @@
 @if(Auth::user()->user_type == "ps" || Auth::user()->user_name == "NCB")
 	<div class="box box-default">
 			<div class="box-header with-border" >
-				<h3 class="box-title" text-align="center"><strong>Seizure - Certification And Disposal Details of Narcotic Contrabands:</strong></h3>
+				<h3 class="box-title" id="box-title" text-align="center"><strong>Seizure - Certification And Disposal Details of Narcotic Contrabands:</strong></h3>
 				<div class="box-tools pull-right">
 					<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
 					<button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
@@ -21,17 +21,26 @@
 							<li style="border-style:outset; pointer-events:none;opacity:0.3;" id="li_disposal"><a href="#disposal" data-toggle="tab"><strong style="font-size:large">Disposal Details</strong></a></li>
 						</ul>
 						
-						<br><hr>
+						<br>
+
+						<div class="alert alert-info" id="case_no_string" role="alert" style="display:none; width:90%; background-color:#337ab7">						
+						</div>
+
+						<hr>						
 
 						<div class="tab-content clearfix">
 							<!-- Seizure Details Form :: STARTS -->
 							<div class="tab-pane active" id="seizure">
 								<form id="form_seizure">
 									<div class="form-group required row">
-										<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Case No.</label>
+										<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Case</label>
 										<div class="col-sm-3">
 											<select class="form-control select2" id="stakeholder" autocomplete="off">
-												<option value="">Select Stakeholder's Name</option>
+												@if(Auth::user()->user_type=="agency")
+													<option value="">Select Agency</option>
+												@else
+													<option value="">Select PS</option>
+												@endif
 												@foreach($data['stakeholders'] as $stakeholder)
 													<option value="{{$stakeholder->stakeholder_id}}">{{$stakeholder->stakeholder_name}}</option>
 												@endforeach
@@ -50,17 +59,17 @@
 										</div>
 									</div>
 
-									<div class="form-group required row">
+									<div class="form-group required row" @if(Auth::user()->user_type=="agency" && Auth::user()->user_name=="NCB") style="display:none" @endif>
 										<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Case Initiated By</label>
 										<div class="col-sm-2">
 											@if(Auth::user()->user_type=="ps")
-												<select class="form-control select2" id="case_initiated_by" autocomplete="off">
+												<select class="form-control" id="case_initiated_by" autocomplete="off">
 													<option value="">Select an option</option>												
 													<option value="self">Self</option>
 													<option value="agency">Any Agency</option>
 												</select>
 											@elseif(Auth::user()->user_type=="agency" && Auth::user()->user_name=="NCB")
-												<select class="form-control select2" id="case_initiated_by" autocomplete="off" disabled>	
+												<select class="form-control" id="case_initiated_by" autocomplete="off">	
 													<option value="self">Self</option>
 												</select>
 											@endif
@@ -69,7 +78,7 @@
 										<div id="div_case_initiated_by" style="display:none">
 											<label class="col-sm-2 col-sm-offset-1 col-form-label-sm control-label" style="font-size:medium">Agency Name</label>
 											<div class="col-sm-2">
-												<select class="form-control select2" id="agency_name" autocomplete="off">
+												<select class="form-control" id="agency_name" autocomplete="off">
 													<option value="">Select an option</option>
 													@foreach($data['agencies'] as $agency)
 														<option value="{{$agency->agency_id}}">{{$agency->agency_name}}</option>
@@ -163,6 +172,7 @@
 										<a href="#certification" data-toggle="tab">
 											<button type="button" class="btn btn-success btn-lg btnNext">Next</button>
 										</a>
+										<button type="button" class="btn btn-primary btn-lg reset">Reset</button>
 									</div>
 
 								</form>
@@ -183,7 +193,7 @@
 											</select>
 										</div>
 
-										<label class="col-sm-2 col-sm-offset-1 col-form-label-sm  control-label" style="font-size:medium">NDPS Court</label>
+										<label class="col-sm-2 col-sm-offset-1 col-form-label-sm  control-label" style="font-size:medium">Designated Magistrate</label>
 										<div class="col-sm-3">											
 											<select class="form-control select2" id="court">
 												<option value="">Select An Option</option>
@@ -197,7 +207,7 @@
 										<!-- Content Will Come Dynamically -->
 									</div>
 
-									<div class="col-sm-4 col-sm-offset-4">
+									<div class="col-sm-6 col-sm-offset-4">
 										<a href="#seizure" data-toggle="tab">
 											<button type="button" class="btn btn-warning btn-lg btnPrevious">Back</button>
 										</a>									
@@ -205,6 +215,7 @@
 										<a href="#disposal" data-toggle="tab">
 											<button type="button" class="btn btn-primary btn-lg btnNext" id="toDisposal" style="display:none">Next</button>
 										</a>
+										<button type="button" class="btn btn-primary btn-lg reset">Reset</button>
 									</div>
 
 								</form>
@@ -225,12 +236,15 @@
 
 <!-- Stakeholders' Report Submission Status -->
 <div class="row">
-    <div class="box box-primary">
+    <div class="box box-primary" id="div_report">
             <div class="box-header with-border">
               <form class="form-inline">
                   <label class="box-title" style="font-size:25px; margin-left:30%">
                       Report For The Month Of :                  
-                      <input type="text" class="form-control month_of_report" style="width:20%; margin-left:3%" name="month_of_report" id="month_of_report" value="{{date('F',strtotime(date('d-m-Y'))).'-'.date('Y',strtotime(date('d-m-Y')))}}" autocomplete="off">
+					  <input type="text" class="form-control month_of_report" style="width:20%; margin-left:3%" name="month_of_report" id="month_of_report" value="{{date('F',strtotime(date('d-m-Y'))).'-'.date('Y',strtotime(date('d-m-Y')))}}" autocomplete="off">
+					  @if(Auth::user()->user_type=='ps' || Auth::user()->user_name=='NCB')
+						  <button type="button" class="btn btn-danger pull-right" id="add_new_case">Add New Case</button>
+					  @endif
                   </label>
               </form>
               <div class="box-tools pull-right">
@@ -241,7 +255,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <table class="table table-bordered table-responsive display" style="width:100%">
+              <table class="table table-bordered table-responsive display" style="width:100%;">
                 <thead>
                   <tr>
                     <th style="display:none">STAKEHOLDER ID </th>
@@ -250,7 +264,8 @@
                     <th style="display:none">CASE YEAR </th>
                     <th></th>
                     <th>Sl No.</th>
-                    <th>Case No.</th>                                    
+					<th>Case No.</th>
+					<th>Designated Magistrate</th>                                     
                     <th>Nature of Narcotic</th>
                     <th>Certification Status</th>
                     <th>Disposal Status</th>
@@ -288,8 +303,8 @@
 	$(document).ready(function(){
 
 		$(".date").datepicker({
-                endDate:'0',
-                format: 'dd-mm-yyyy'
+			endDate:'0',
+			format: 'dd-mm-yyyy'
          }); // Date picker initialization For All The Form Elements
 
 		 var date=$(".month_of_report").datepicker({
@@ -301,16 +316,32 @@
 		$(".select2").select2(); // select2 dropdown initialization
 
 		$('html, body').animate({
-			scrollTop: $(".table").offset().top
+			scrollTop: $("#div_report").offset().top
 		}, 1000)
 
 		$('.btnNext').click(function(){
 			$('.nav > .active').next('li').find('a').trigger('click');
+			$('html, body').animate({
+				scrollTop: $("#box-title").offset().top
+			}, 1000)
 		});
 
 		$('.btnPrevious').click(function(){
 			$('.nav > .active').prev('li').find('a').trigger('click');
-		});
+			$('html, body').animate({
+				scrollTop: $("#box-title").offset().top
+			}, 1000)
+		});	
+
+		$(document).on("click","#add_new_case",function(){
+			$('html, body').animate({
+				scrollTop: $("#box-title").offset().top
+			}, 1000)
+		})
+
+		$(document).on("click",".reset",function(){
+			location.reload(true);
+		})
 		
 
  	/*LOADER*/
@@ -331,9 +362,9 @@
 			count++;
 			$(".div_add_more:first").clone().find('.div_other_narcotic_type').hide().end().insertAfter(".div_add_more:last");
 			$(".add_more:last").attr({src:"images/details_close.png",
-																class:"remove", 
-																alt:"remove",
-																id:""});
+										class:"remove", 
+										alt:"remove",
+										id:""});
 			$(".seizure_quantity:last").val('');
 			$(".date").datepicker({
 			endDate:'0',
@@ -360,14 +391,14 @@
 		$(document).on("click","#seizure_add_more", function(){
 			$(".div_add_more_seizure:first").clone().find('.div_other_narcotic_type').hide().end().insertAfter(".div_add_more_seizure:last");
 			$(".seizure_add_more:last").attr({src:"images/details_close.png",
-																class:"remove_add_more_seizure", 
-																alt:"remove",
-																id:""});
+												class:"remove_add_more_seizure", 
+												alt:"remove",
+												id:""});
 			$(".seizure_quantity:last").val('');
 			$(".date").datepicker({
-			endDate:'0',
-			format: 'dd-mm-yyyy'
-		}); // Date picker re-initialization
+				endDate:'0',
+				format: 'dd-mm-yyyy'
+			}); // Date picker re-initialization
 			
 		})
 	/*If multiple narcotics are entered after first time submission of seizure details :: ENDS*/
@@ -449,9 +480,9 @@
 				$("#add_new_seizure").hide();
 				$("#cancel").show();
 				$(".date").datepicker({
-			endDate:'0',
-			format: 'dd-mm-yyyy'
-		}); // Date picker re-initialization
+					endDate:'0',
+					format: 'dd-mm-yyyy'
+				}); // Date picker re-initialization
 			
 
 		})
@@ -843,9 +874,12 @@
 			$(document).on("change","#case_year", function(){
 					var stakeholder = $("#stakeholder option:selected").val();
 					var case_no = $("#case_no").val();
-					var case_year = $("#case_year option:selected").val();
+					var case_year = $("#case_year option:selected").val();			
 
 					if(stakeholder!="" && case_no!="" && case_year!=""){
+						var case_no_string = "Case No. : "+$("#stakeholder option:selected").text()+" / "+case_no+" / "+case_year;
+						$("#case_no_string").html(case_no_string).show();
+
 							$.ajax({
 								type:"POST",
 								url:"entry_form/fetch_case_details",
@@ -982,6 +1016,7 @@
 																						'<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Disposal Quantity</label>'+
 																						'<div class="col-sm-3">'+
 																							'<input class="form-control disposal_quantity" type="number">'+
+																							'<small>Seizure Quantity: '+value.quantity_of_drug+' '+value.seizure_unit+' ; Sample Quantity: '+value.quantity_of_sample+' '+value.sample_unit+'</small>'+
 																						'</div>'+
 
 																						'<label class="col-sm-2 col-sm-offset-2 col-form-label-sm control-label" style="font-size:medium">Weighing Unit</label>'+
@@ -1012,14 +1047,14 @@
 													}
 													else{														
 														str_certification_details+=
-																		'<div class="form-group required row">'+
-																				'<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Nature of Narcotic</label>'+
-																				'<div class="col-sm-3">'+
-																					'<input type="text" class="form-control narcotic_type" value="'+value.drug_name+'" disabled>'+
-																				'</div>'+
-																		'</div>'+
+															'<div class="form-group required row">'+
+																	'<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Nature of Narcotic</label>'+
+																	'<div class="col-sm-3">'+
+																		'<input type="text" class="form-control narcotic_type" value="'+value.drug_name+'" disabled>'+
+																	'</div>'+
+															'</div>'+
 
-																		'<div class="alert alert-danger" style="width:90%" role="alert">Certification Yet To Be Approved By The Judicial Magistrate</div>';															
+															'<div class="alert alert-danger" style="width:90%" role="alert">Certification Yet To Be Approved By The Judicial Magistrate</div>';															
 														
 													}
 													
@@ -1027,11 +1062,12 @@
 
 											str_disposal_details+=
 											'<div class="form-group required row">'+
-													'<div class="col-sm-3 col-sm-offset-5">'+
-														'<a href="#certification" data-toggle="tab">'+
-															'<button type="button" class="btn btn-warning btn-lg btnPrevious">Back</button>'+
-														'</a>'+
-													'</div>'
+												'<div class="col-sm-3 col-sm-offset-5">'+
+													'<a href="#certification" data-toggle="tab">'+
+														'<button type="button" class="btn btn-warning btn-lg btnPrevious">Back</button>'+
+													'</a>'+
+													'<button type="button" class="btn btn-primary btn-lg reset" style="margin-left:16px">Reset</button>'+
+												'</div>'+
 											'</div>';
 
 											$(".div_add_more").html(str_case_details);
@@ -1039,9 +1075,18 @@
 											$("#form_disposal").html(str_disposal_details);
 
 											$(".date").datepicker({
-															endDate:'0',
-															format: 'dd-mm-yyyy'
+												endDate:'0',
+												format: 'dd-mm-yyyy'
 											}); // Initialization of Date picker For The Disposal Screen
+											
+											if(obj['case_details']['0'].ps_id!=null && obj['case_details']['0'].agency_id==null){
+												$("#case_initiated_by").val('self').attr('disabled',true);												
+											}
+											else if(obj['case_details']['0'].ps_id!=null && obj['case_details']['0'].agency_id!=null){
+												$("#case_initiated_by").val('agency').attr('disabled',true);
+												$("#agency_name").val(obj['case_details']['0'].agency_id).attr('disabled',true);
+												$("#div_case_initiated_by").show();											
+											}
 											
 											$("#seizure_date").val(obj['case_details']['0'].date_of_seizure).attr('readonly',true);											
 											$("#storage").prepend("<option value='"+obj['case_details']['0'].storage_location_id+"' selected>"+obj['case_details']['0'].storage_name+"</option>").attr('disabled',true);
@@ -1191,11 +1236,12 @@
 
 				$('.table').DataTable().destroy();
 
-				table = $(".table").DataTable({ 
+				table = $(".table").DataTable({
 							"processing": true,
 							"serverSide": true,
 							"searching": false,
 							"paging" : false,
+							"ordering" : false,
 							"ajax": {
 							"url": "entry_form/monthly_report_status",
 							"type": "POST",
@@ -1215,7 +1261,9 @@
 							"data":"Case Year"},
 						{"data":"More Details"}, 
 						{"data": "Sl No"},
-						{"data": "Case_No"},
+						{"data": "Case_No",
+						"width":"20%"},
+						{"data": "Magistrate"},
 						{"data": "Narcotic Type"},
 						{"data": "Certification Status"},
 						{"data": "Disposal Status"}
@@ -1296,24 +1344,25 @@
 								'</table>'+
 
 								'<br>'+
-				
-								'<table class="table table-bordered table-responsive">'+
-									'<thead>'+
-										'<tr>'+
-											'<th>Narcotic Type</th>'+
-											'<th>Seizure Quantity</th>'+ 
-											'<th>Date of Seizure</th>'+                                       
-											'<th>Certification Status</th>'+
-											'<th>Date of Certification</th>'+
-											'<th>Sample Quantity</th>'+
-											'<th>Magistrate Remarks</th>'+
-											'<th>Disposal Status</th>'+
-											'<th>Date of Disposal</th>'+
-											'<th>Disposal Quantity</th>'+
-										'</tr>'+
-									'</thead>'+
-									
-									'<tbody>';
+								
+								'<div style="width:85%; overflow-x:scroll">'+
+									'<table class="table table-bordered table-responsive" style="white-space:nowrap;">'+
+										'<thead>'+
+											'<tr>'+
+												'<th>Narcotic Type</th>'+
+												'<th>Seizure Quantity</th>'+ 
+												'<th>Date of Seizure</th>'+                                       
+												'<th>Certification Status</th>'+
+												'<th>Date of Certification</th>'+
+												'<th>Sample Quantity</th>'+
+												'<th>Magistrate Remarks</th>'+
+												'<th>Disposal Status</th>'+
+												'<th>Date of Disposal</th>'+
+												'<th>Disposal Quantity</th>'+
+											'</tr>'+
+										'</thead>'+
+										
+										'<tbody>';
 
 				$.each(obj,function(key,value){
 					child_string += ""+
@@ -1351,7 +1400,7 @@
 								'</tr>';
 				})
 
-				child_string +='</tbody></table>';
+				child_string +='</tbody></table></div>';
 
 				row.child(child_string).show();
 			}

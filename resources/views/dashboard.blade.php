@@ -62,7 +62,7 @@
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table class="table table-bordered table-responsive display" style="white-space:nowrap;">
+            <<table class="table table-bordered table-responsive display" style="width:100%;">
               <thead>
                 <tr>
                     <th style="display:none">STAKEHOLDER ID </th>
@@ -72,7 +72,8 @@
                     <th></th>
                     <th>Sl No. </th>
                     <th>Stakeholder Name</th>
-                    <th>Case No.</th>                                    
+                    <th>Case No.</th>   
+					<th>Designated Magistrate</th>                                 
                     <th>Nature of Narcotic</th>
                     <th>Certification Status</th>
                     <th>Disposal Status</th>
@@ -113,6 +114,7 @@
                     "processing": true,
                     "serverSide": true,
                     "searching": false,
+                    "ordering" : false,
                     "paging" : false,
                     "ajax": {
                       "url": "dashboard/monthly_report_status",
@@ -134,7 +136,9 @@
                       {"data":"More Details"}, 
                       {"data": "Sl No"},         
                       {"data": "Stakeholder Name"},
-                      {"data": "Case_No"},
+                      {"data": "Case_No",
+						"width":"20%"},
+                      {"data": "Magistrate"},
                       {"data": "Narcotic Type"},
                       {"data": "Certification Status"},
                       {"data": "Disposal Status"}
@@ -218,24 +222,25 @@
                             '</table>'+
 
                             '<br>'+
-            
-                            '<table class="table table-bordered table-responsive">'+
-                                '<thead>'+
-                                    '<tr>'+
-                                        '<th>Narcotic Type</th>'+
-                                        '<th>Seizure Quantity</th>'+ 
-                                        '<th>Date of Seizure</th>'+                                        
-                                        '<th>Certification Status</th>'+
-                                        '<th>Date of Certification</th>'+
-                                        '<th>Sample Quantity</th>'+
-                                        '<th>Magistrate Remarks</th>'+
-                                        '<th>Disposal Status</th>'+
-                                        '<th>Date of Disposal</th>'+
-                                        '<th>Disposal Quantity</th>'+
-                                    '</tr>'+
-                                '</thead>'+
-                                
-                                '<tbody>';
+
+                            '<div style="width:85%; overflow-x:scroll">'+
+                                '<table class="table table-bordered table-responsive" style="white-space:nowrap;">'+
+                                    '<thead>'+
+                                        '<tr>'+
+                                            '<th>Narcotic Type</th>'+
+                                            '<th>Seizure Quantity</th>'+ 
+                                            '<th>Date of Seizure</th>'+                                        
+                                            '<th>Certification Status</th>'+
+                                            '<th>Date of Certification</th>'+
+                                            '<th>Sample Quantity</th>'+
+                                            '<th>Magistrate Remarks</th>'+
+                                            '<th>Disposal Status</th>'+
+                                            '<th>Date of Disposal</th>'+
+                                            '<th>Disposal Quantity</th>'+
+                                        '</tr>'+
+                                    '</thead>'+
+                                    
+                                    '<tbody>';
 
             $.each(obj,function(key,value){
                 child_string += ""+
@@ -273,7 +278,7 @@
                     '</tr>';
             })
 
-            child_string +='</tbody></table>';
+            child_string +='</tbody></table></div>';
 
             row.child(child_string).show();
         }

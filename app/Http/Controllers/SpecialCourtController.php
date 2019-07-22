@@ -57,13 +57,15 @@ class SpecialCourtController extends Controller
             7 =>'Case_No',
             8 =>'Narcotic Type',
             9 =>'Certification Status',
-            10 =>'Disposal Status'
+            10 =>'Disposal Status',
+            11 => 'Magistrate' 
         );
 
 
         // Fetching unique Case No. As Multiple Row May Exist For A Single Case No.
         $cases = Seizure::leftjoin('ps_details','seizures.ps_id','=','ps_details.ps_id')
                         ->leftjoin('agency_details','seizures.agency_id','=','agency_details.agency_id')
+                        ->join('court_details','seizures.certification_court_id','=','court_details.court_id')
                         ->where([
                             ['seizures.created_at','>=',$start_date],
                             ['seizures.created_at','<=',$end_date],
@@ -74,7 +76,7 @@ class SpecialCourtController extends Controller
                             ['seizures.updated_at','<=',$end_date],
                             ['seizures.district_id',$district_id]
                         ])
-                        ->select('seizures.ps_id','seizures.agency_id','case_no','case_year','seizures.created_at','ps_name','agency_name')
+                        ->select('seizures.ps_id','seizures.agency_id','case_no','case_year','seizures.created_at','ps_name','agency_name','court_name')
                         ->distinct()
                         ->get();
         
@@ -129,6 +131,10 @@ class SpecialCourtController extends Controller
                 else
                     $report['Stakeholder Name'] = "<strong>".$case->agency_name."</strong>";
             }
+
+            // Designated Magistrate
+            $report['Magistrate'] = $case->court_name;
+
 
 
             //Case_No

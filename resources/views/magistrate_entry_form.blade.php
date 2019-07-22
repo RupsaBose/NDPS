@@ -18,7 +18,12 @@
                         <li style="border-style:outset;pointer-events:none;opacity:0.3;" id="li_certification"><a href="#certification" data-toggle="tab"><strong style="font-size:large">Certification Details</strong></a></li>
                     </ul>
                     
-                    <br><hr>
+                    <br>
+
+                    <div class="alert alert-info" id="case_no_string" role="alert" style="display:none; width:90%; background-color:#337ab7">						
+                    </div>
+                    
+                    <hr>
                 </div>
 
                 <div class="tab-content clearfix">
@@ -26,7 +31,7 @@
                     <div class="tab-pane active" id="seizure">
                         <form id="form_seizure">
                             <div class="form-group required row">
-                                <label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Case No.</label>
+                                <label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Case</label>
                                 <div class="col-sm-3">
                                     <select class="form-control select2" id="stakeholder">
                                         <option value="">Select Stakeholder</option>
@@ -64,32 +69,15 @@
                     <!-- Certification Details Form :: STARTS -->
                     <div class="tab-pane" id="certification">
                         <form id="form_certification">
-                            <div class="form-group row required">
-                                <label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">District</label>
-                                <div class="col-sm-3">
-                                    <select class="form-control select2" id="district">
-                                        <option value="">Select An Option</option>                                        
-                                    </select>
-                                </div>
-
-                                <label class="col-sm-2 col-sm-offset-1 col-form-label-sm control-label" style="font-size:medium">NDPS Court</label>
-                                <div class="col-sm-3">											
-                                    <select class="form-control select2" id="court">
-                                        <option value="">Select An Option</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <hr>
-
                             <div class="form-group" id="certification_details">
                                 <!-- Content Will Come Dynamically -->
                             </div>
 
-                            <div class="col-sm-4 col-sm-offset-5">
+                            <div class="col-sm-4 col-sm-offset-4">
                                 <a href="#seizure" data-toggle="tab">
                                     <button type="button" class="btn btn-warning btn-lg btnPrevious">Back</button>
                                 </a>
+                                <button type="button" class="btn btn-primary btn-lg reset">Reset</button>
                             </div>
 
 
@@ -120,7 +108,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <table class="table table-bordered table-responsive display" style="white-space:nowrap;">
+                    <table class="table table-bordered table-responsive display" style="width:100%;">
                 <thead>
                   <tr>
                     <th style="display:none">STAKEHOLDER ID </th>
@@ -185,6 +173,10 @@
 		$('.btnPrevious').click(function(){
 			$('.nav > .active').prev('li').find('a').trigger('click');
 		});
+
+        $(document).on("click",".reset",function(){
+			location.reload(true);
+		})
 		
 
  	/*LOADER*/
@@ -230,6 +222,19 @@
                                 var str_disposal_details = "";
                                 var all_narcotic_certfication_flag = 0;
                                 var all_narcotic_disposal_flag = 0;
+
+                                if(obj['case_details']['0'].ps_id!=null && obj['case_details']['0'].agency_name!=null){
+                                    var case_no_string = "Case No. : "+$("#stakeholder option:selected").text()+" / "+case_no+" / "+case_year+" (Case initiated by: "+obj['case_details']['0'].agency_name+" )";
+                                    $("#case_no_string").html(case_no_string).show();
+                                }
+                                else if(obj['case_details']['0'].ps_id!=null && obj['case_details']['0'].agency_name==null){
+                                    var case_no_string = "Case No. : "+$("#stakeholder option:selected").text()+" / "+case_no+" / "+case_year;
+                                    $("#case_no_string").html(case_no_string).show();
+                                }
+                                else if(obj['case_details']['0'].ps_id==null && obj['case_details']['0'].agency_name==null){
+                                    var case_no_string = "Case No. : "+$("#stakeholder option:selected").text()+" / "+case_no+" / "+case_year;
+                                    $("#case_no_string").html(case_no_string).show();
+                                }
 
                                 $.each(obj['case_details'],function(index,value){
                                     str_case_details+="<hr>"+
@@ -296,6 +301,7 @@
                                                 '<label class="col-sm-2 col-form-label-sm control-label" style="font-size:medium">Quantity of Sample</label>'+
                                                 '<div class="col-sm-3">'+
                                                     '<input class="form-control sample_quantity" type="number">'+
+                                                    '<small>Seizure Quantity: '+value.quantity_of_drug+' '+value.seizure_unit+'</small>'+
                                                 '</div>'+
 
                                                 '<label class="col-sm-2 col-sm-offset-1 col-form-label-sm control-label" style="font-size:medium">Weighing Unit</label>'+
@@ -360,9 +366,10 @@
 
                                     '<hr>'+
                                     
-                                    '<div class="col-sm-3 col-sm-offset-5">'+
+                                    '<div class="col-sm-3 col-sm-offset-4">'+
                                         '<a href="#certification" data-toggle="tab">'+
                                             '<button type="button" class="btn btn-success btn-lg btnNext">Next</button>'+
+                                            '<button type="button" class="btn btn-primary btn-lg reset" style="margin-left:16px">Reset</button>'+
                                         '</a>'+
                                     '</div>';
 
@@ -383,9 +390,7 @@
                                 
                                 $("#seizure_date").val(obj['case_details']['0'].date_of_seizure).attr('readonly',true);											
                                 $("#storage").prepend("<option value='"+obj['case_details']['0'].storage_location_id+"' selected>"+obj['case_details']['0'].storage_name+"</option>").attr('disabled',true);
-                                $("#remark").val(obj['case_details']['0'].remarks).attr('readonly',true);
-                                $("#district").prepend("<option value='"+obj['case_details']['0'].district_id+"' selected>"+obj['case_details']['0'].district_name+"</option>").attr('disabled',true);
-                                $("#court").prepend("<option value='"+obj['case_details']['0'].court_id+"' selected>"+obj['case_details']['0'].court_name+"</option>").attr('disabled',true);
+                                $("#remark").val(obj['case_details']['0'].remarks).attr('readonly',true);                                
 
                                 $(".narcotic_type_certification").trigger("change");
                                 
@@ -454,6 +459,7 @@
                     "serverSide": true,
                     "searching": false,
                     "paging" : false,
+                    "ordering" : false,
                     "ajax": {
                       "url": "magistrate_entry_form/monthly_report_status",
                       "type": "POST",
@@ -474,7 +480,8 @@
                       {"data":"More Details"}, 
                       {"data": "Sl No"},         
                       {"data": "Stakeholder Name"},
-                      {"data": "Case_No"},
+                      {"data": "Case_No",
+                      "width":"20%"},
                       {"data": "Narcotic Type"},
                       {"data": "Certification Status"},
                       {"data": "Disposal Status"}
@@ -554,24 +561,25 @@
                             '</table>'+
 
                             '<br>'+
-            
-                            '<table class="table table-bordered table-responsive">'+
-                                '<thead>'+
-                                    '<tr>'+
-                                        '<th>Narcotic Type</th>'+
-                                        '<th>Seizure Quantity</th>'+ 
-                                        '<th>Date of Seizure</th>'+                                       
-                                        '<th>Certification Status</th>'+
-                                        '<th>Date of Certification</th>'+
-                                        '<th>Sample Quantity</th>'+
-                                        '<th>Magistrate Remarks</th>'+
-                                        '<th>Disposal Status</th>'+
-                                        '<th>Date of Disposal</th>'+
-                                        '<th>Disposal Quantity</th>'+
-                                    '</tr>'+
-                                '</thead>'+
-                                
-                                '<tbody>';
+                            
+                            '<div style="width:85%; overflow-x:scroll">'+
+                                '<table class="table table-bordered table-responsive" style="white-space:nowrap;">'+
+                                    '<thead>'+
+                                        '<tr>'+
+                                            '<th>Narcotic Type</th>'+
+                                            '<th>Seizure Quantity</th>'+ 
+                                            '<th>Date of Seizure</th>'+                                       
+                                            '<th>Certification Status</th>'+
+                                            '<th>Date of Certification</th>'+
+                                            '<th>Sample Quantity</th>'+
+                                            '<th>Magistrate Remarks</th>'+
+                                            '<th>Disposal Status</th>'+
+                                            '<th>Date of Disposal</th>'+
+                                            '<th>Disposal Quantity</th>'+
+                                        '</tr>'+
+                                    '</thead>'+
+                                    
+                                    '<tbody>';
 
             $.each(obj,function(key,value){
                 child_string += ""+
@@ -609,7 +617,7 @@
                             '</tr>';
             })
 
-            child_string +='</tbody></table>';
+            child_string +='</tbody></table></div>';
 
             row.child(child_string).show();
         }
